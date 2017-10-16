@@ -1,0 +1,122 @@
+@backGrey:#EEE;
+@lightGrey:#CCC;
+@grey:#919191;
+@drakGrey:#333333;
+@blue:#3191d8;
+@drakBlue:#297AAF;
+@orange:#F18B85;
+@transOrange:rgba(253, 71, 30,0.1);
+.grey{
+	color: @grey;
+}
+.blue{
+	color: @blue;
+}
+
+
+.font12{
+	font-size: 0.12rem;
+}
+.font14{
+	font-size: 0.14rem;
+}
+.font15{
+	font-size: 0.15rem;
+}
+.font16{
+	font-size: 0.16rem;
+}
+.fontBold{
+	font-weight: bold;
+}
+.mgt5{
+	margin-top: 0.05rem;
+}
+.mgt10{
+	margin-top: 0.1rem;
+}
+.mgt20{
+	margin-top: 0.2rem;
+}
+.mgr5{
+	margin-right: 0.05rem;
+}
+.mgl5{
+	margin-left: 0.05rem;
+}
+.inlineBlock{
+	display: inline-block;
+}
+a{text-decoration: none;}
+.clearfix:before, .clearfix:after { content: "\0020"; display: block; height: 0; overflow: hidden; }  
+.clearfix:after { clear: both; }  
+.clearfix { zoom: 1; }
+.fr{
+	float: right;
+}
+.fl{
+	float: left;
+}
+.textCenter{
+	text-align: center;
+}
+.verticalMiddle{
+	vertical-align: middle;
+}
+.flex{
+
+    /* 设置弹性布局 */
+
+    display:-webkit-flex;/* Chrome 21+ */
+
+    display:-ms-flexbox;/* WP IE 10 */
+
+    display:flex;/* android 4.4 */
+
+}
+.flex-direction-row{
+
+    /* 设置弹性布局的方向，子元素按照在源文档中声明的顺序从左到右显示 */
+
+    -webkit-flex-direction: row;/* Chrome 21+ */
+
+    -ms-flex-direction: row;/* WP IE 10 */
+
+    flex-direction: row;/* android 4.4 */
+
+}
+.flex-1{
+
+   /* 子元素自动占据剩余的空间 */
+
+    -webkit-box-flex:1;/* android 2.1-3.0, ios 3.2-4.3 */
+
+    -webkit-flex:1;/* Chrome 21+ */
+
+    -ms-flex:1;/* WP IE 10 */
+
+    flex:1;/* android 4.4 */
+
+}
+.flex-1d5{
+
+   /* 子元素自动占据剩余的空间 */
+
+    -webkit-box-flex:1.5;/* android 2.1-3.0, ios 3.2-4.3 */
+
+    -webkit-flex:1.5;/* Chrome 21+ */
+
+    -ms-flex:1.5;/* WP IE 10 */
+
+    flex:1.5;/* android 4.4 */
+
+}
+.rounded-corners (@radius: 5px) {
+  border-radius: @radius;
+  -webkit-border-radius: @radius;
+  -moz-border-radius: @radius;
+}
+.ellipsis{
+	text-overflow:ellipsis; white-space:nowrap; overflow:hidden;
+}
+
