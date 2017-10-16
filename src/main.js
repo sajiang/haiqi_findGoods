@@ -5,15 +5,15 @@ import App from './App'
 import router from './router'
 import axios from 'axios'
 import Vuex from 'Vuex'
-import { Loadmore,InfiniteScroll  } from 'mint-ui'
+import { InfiniteScroll  } from 'mint-ui'
 
 import Message from 'iview/src/components/message/index.js';
 import 'iview/dist/styles/iview.css'
 
 
 Vue.use(Vuex);
-Vue.component(Loadmore.name, Loadmore);
 Vue.use(InfiniteScroll);
+
 const store = new Vuex.Store({
   state: {
     url:"http://192.168.0.198:86/api/",

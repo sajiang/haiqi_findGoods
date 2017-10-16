@@ -9,10 +9,10 @@
                     <img :src="imgPath+'logo.png'">
                 </div>
                 <div class="fl">
-                    <div class="mgt20">日照宏达海运有限公司{{companyId}}</div>
+                    <div class="mgt20">{{companyData.Company}}</div>
                     <div class="font12 grey mgt5">
-                        <span class="mgr5">已注册1年</span>
-                        <span>被联系10次</span>
+                        <span class="mgr5">已注册{{companyData.RegNum}}</span>
+                        <span>被联系{{companyData.ContactNum}}次</span>
                     </div>
                 </div>
             </div>
@@ -20,19 +20,19 @@
                 <div class="font15">主营业务</div>
                 <div class="grey mgt5">
                     <span class="title">主营航线：</span>
-                    <span class="content">上海-广东，上海-张家口，上海-秦皇岛海-秦皇岛海-秦皇岛海-秦皇岛</span>
+                    <span class="content">{{companyData.MainRoute}}</span>
                 </div>
                 <div class="grey">
                     <span class="title">主营货种：</span>
-                    <span class="content">沙，石子，煤炭</span>
+                    <span class="content">{{companyData.MainGoods}}</span>
                 </div>
                 <div class="grey">
                     <span class="title">主营吨位：</span>
-                    <span class="content">15000-30000</span>
+                    <span class="content">{{companyData.MainTon}}</span>
                 </div>
             </div>
             <div class="historyGoods" @click="toHistoryCompany">
-                已发盘<span class="blue">16</span>次
+                已发盘<span class="blue">{{companyData.PubNum}}</span>次
                 <span class="fr">></span>
             </div>
         </div>
@@ -47,12 +47,29 @@ export default {
         return {
             imgPath:"../../static/img/",
             companyId:'',
+            companyData:{}
         }
     },
     created(){
         this.companyId=this.$route.params.companyId;
+        this.getCompanyInfo();
     },
     methods:{
+        getCompanyInfo(){
+            var _this=this;
+            var postData={
+                GoodsOwnerId:this.companyId,
+                OpenId:'',
+            };
+            this.$http.post(this.$store.state.url+'Goods/GOO_GoodsListDetails',postData)
+            .then(function(response){
+                _this.companyData=response.data.RetData;
+                
+            })
+            .catch(function(error){
+                console.log(error);
+            });
+        },
         toHistoryCompany(){
             this.$router.push({ name: 'historyCompany', params: { companyId:this.companyId }});
         }

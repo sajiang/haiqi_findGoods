@@ -61,10 +61,10 @@ export default {
         this.cityIndex=index;
         this.$emit("selectportdone",[
           {
-            proviceId:this.portlist[this.proviceIndex].PId,
+            proviceId:this.portlist[this.proviceIndex].PID,
             proviceName:this.portlist[this.proviceIndex].PName
           },{
-            cityId:this.portlist[this.proviceIndex].Citys[this.cityIndex].CId,
+            cityId:this.portlist[this.proviceIndex].Citys[this.cityIndex].CID,
             cityName:this.portlist[this.proviceIndex].Citys[this.cityIndex].CName
           }]);
       }
@@ -81,7 +81,7 @@ export default {
       }else{
         //只选了省
         this.$emit("selectportdone",[{
-          proviceId:this.portlist[this.proviceIndex].PId,
+          proviceId:this.portlist[this.proviceIndex].PID,
           proviceName:this.portlist[this.proviceIndex].PName
         }]);
       }

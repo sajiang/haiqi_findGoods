@@ -37,23 +37,27 @@
 				<span class="blueBtn" @click="replaceDateRange">搜索</span>
 			</div>
 		</div>
-		<div class="goodsList" >
-			<mt-loadmore :bottom-method="loadMore" :auto-fill="false" :bottom-all-loaded="pageIndex==totalPage">
-				<div></div>
-				<div class="goodsItem" v-for="(item,index) in goodsList" @click="toCompanyMainPage(index)">
+		<div class="goodsList" v-infinite-scroll="loadMore"
+			 infinite-scroll-disabled="notLoading"
+			 infinite-scroll-distance="10"
+			 infinite-scroll-immediate-check="false">
+			<div class="goodsItem" v-for="(item,index) in goodsList" @click="toCompanyMainPage(item.GoodsOwnerId)">
 				<div>
 					<span class="blue inlineBlock mgt10">{{item.GoodsOwnerName}}</span>
-					<a class="tel" :href="'tel:'+item.GoodsOwnerPhone"><img :src="imgPath+'tel.png'"></a>
+					<a @click.stop="" class="tel" :href="'tel:'+item.GoodsOwnerPhone"><img :src="imgPath+'tel.png'"></a>
 				</div>
 				<div class="flowDirection">
-					<div class="inlineBlock middle startPort">{{item.StartPortName}}</div>
-					<div class="inlineBlock arrow">
-						<div class="font12 goodsType">{{item.GoodsTypeName}}</div>
-						<div class="imgWrap"><img :src="imgPath+'arrowRight.png'" class="arrowRight"></div>
-						<div class="font12">{{item.GoodsVolume}}±{{item.AddVolume}}</div>
+					<div class="ports">
+						<div class="inlineBlock startPort">{{item.StartPortName}}</div>
+						<div class="inlineBlock arrow">
+							<div class="font12 goodsType">{{item.GoodsTypeName}}</div>
+							<div class="imgWrap"><img :src="imgPath+'arrowRight.png'" class="arrowRight"></div>
+							<div class="font12">{{item.GoodsVolume}}±{{item.AddVolume}}</div>
+						</div>
+						<div class="inlineBlock  endPort">{{item.EndPortName}}</div>
 					</div>
-					<div class="inlineBlock middle endPort">{{item.EndPortName}}</div>
-					<div class="inlineBlock middle blue time">{{item.LoadDate}}±{{item.LoadAddDay}}</div>
+					
+					<div style="width:20%" class="inlineBlock  blue time">{{item.LoadDate}}±{{item.LoadAddDay}}</div>
 				</div>
 				<div class="font12 grey flex flex-direction-row">
 					<span class="flex-1"><img class="dot" :src="imgPath+'dot.png'"/>已注册{{item.RegNum}}</span>
@@ -61,8 +65,7 @@
 					<span class="flex-1"><img class="dot" :src="imgPath+'dot.png'"/>被联系{{item.ContactNum}}次</span>
 					<span class="fr publishedTime">{{item.EditDate}}</span>
 				</div>
-				</div>
-			</mt-loadmore>
+			</div>
 		</div>
 		<div class="addGoods">
 			<img @click="toAddGoods" :src="imgPath+'addGoods.png'">
@@ -118,6 +121,7 @@ export default {
       goodsList:[],
       pageIndex:1,
       totalPage:0,
+      notLoading:false,
       portList:[]
     }
   },
@@ -129,9 +133,6 @@ export default {
   	this.getGoodsList();
   },
   methods:{
-  	loadTop(){
-  		//donothind
-  	},
   	loadMore(){
   		this.pageIndex++;
   		this.getGoodsList();
@@ -151,13 +152,12 @@ export default {
   			EndTime:this.searchOption.dateRange.endDate,
   			OpenId:''
   		};
-  		this.$http({
-			method:'post',
-			url:this.$store.state.url+'Goods/GOO_GoodsList',
-			data:postData
-		})
+  		this.$http.post(this.$store.state.url+'Goods/GOO_GoodsList',postData)
   		.then(function(response){
   			_this.totalPage=response.data.RetData.TotalPage;
+  			if (_this.totalPage==_this.pageIndex) {
+  				_this.notLoading=true;
+  			}
   			if (_this.pageIndex>1) {
   				_this.goodsList=_this.goodsList.concat(response.data.RetData.GoodsList);
   			}else{
@@ -167,7 +167,7 @@ export default {
   		})
   		.catch(function(error){
   			console.log(error);
-  		})
+  		});
   	},
   	showSearchOption(name) {
       //如果点击部分已经选中
@@ -206,7 +206,8 @@ export default {
 	        this.searchOption.startPort.StartPID=0;
 	        this.searchOption.startPort.StartCID=0;
 	    }
-    	
+	    this.pageIndex=1;
+	    this.getGoodsList();
     },
     replaceEndPort(portInfo){
     	this.shadeShow=false;
@@ -227,12 +228,16 @@ export default {
 	        this.searchOption.endPort.EndCId=0;
         	this.searchOption.endPort.EndPID=0;
 	    }
+	    this.pageIndex=1;
+	    this.getGoodsList();
     },
     replaceWeightRange(){
     	if (parseInt(this.searchOption.weightRange.theStartVal)<parseInt(this.searchOption.weightRange.theEndVal)) {
 			this.searchOption.weightRange.showstr=this.searchOption.weightRange.theStartVal+"-"+this.searchOption.weightRange.theEndVal;
 			this.searchOption.weightRange.show=false;
 			this.shadeShow=false;
+			this.pageIndex=1;
+	    	this.getGoodsList();
 		}else{
 			this.$Message.error('起始吨位不能大于截止吨位');
 		}
@@ -240,23 +245,33 @@ export default {
     replaceDateRange(){
     	var startDateTime=new Date(this.searchOption.dateRange.startDate).getTime();
     	var endDateTime=new Date(this.searchOption.dateRange.endDate).getTime();
-    	if (startDateTime<endDateTime) {
+    	if (startDateTime>endDateTime&&startDateTime!=0&&endDateTime!=0) {
+    		this.$Message.error('开始时间不能大于结束时间');
+		}else{
 			this.searchOption.dateRange.showstr=this.searchOption.dateRange.startDate.substr(5)+"~"+this.searchOption.dateRange.endDate.substr(5);
 			this.searchOption.dateRange.show=false;
 			this.shadeShow=false;
-		}else{
-			this.$Message.error('开始时间不能大于结束时间');
+			this.pageIndex=1;
+	    	this.getGoodsList();
 		}
     },
     clearWeightRange(){
     	this.searchOption.weightRange.showstr="货量";
     	this.searchOption.weightRange.theStartVal="";
     	this.searchOption.weightRange.theEndVal="";
+    	this.searchOption.weightRange.show=false;
+    	this.shadeShow=false;
+    	this.pageIndex=1;
+	    this.getGoodsList();
     },
     clearDateRange(){
     	this.searchOption.dateRange.showstr="日期";
     	this.searchOption.dateRange.startDate="";
     	this.searchOption.dateRange.endDate="";
+    	this.searchOption.dateRange.show=false;
+    	this.shadeShow=false;
+    	this.pageIndex=1;
+	    this.getGoodsList();
     },
     toCompanyMainPage(companyId){
     	this.$router.push({ name: 'companyMainPage', params: { companyId }});
@@ -349,33 +364,35 @@ export default {
 			position: relative;
 			top: -0.1rem;
 			height: 0.5rem;
-			.startPort{
-				width: 0.74rem;
-			}
-			.endPort{
-				width: 0.74rem;
-				text-align: right;
-			}
-			
-			.middle{
-				position: relative;
-				top: -0.1rem;
+			.ports{
+				width:75%;text-align:center;position:relative;
+				.startPort{
+					position: absolute;
+					top: 0.2rem;
+					left: 0rem;
+				}
+				.endPort{
+					position: absolute;
+					top: 0.2rem;
+					right: 0rem;
+				}
+				.arrow{
+					text-align: center;
+					.goodsType{
+						position: relative;
+						top: 0.1rem;
+					}
+					.arrowRight{
+						width: 0.82rem;
+					}
+				}
 			}
 			.time{
 				position: absolute;
 				right: 0.05rem;
 				top: 0.2rem;
 			}
-			.arrow{
-				text-align: center;
-				.goodsType{
-					position: relative;
-					top: 0.1rem;
-				}
-				.arrowRight{
-					width: 0.82rem;
-				}
-			}
+			
 		}
 		.dot{
 			width: 0.04rem;
