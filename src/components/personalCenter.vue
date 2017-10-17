@@ -19,7 +19,7 @@
                 </div>
                 <div class="fr mgt20">
                 	<span class="blueBtn" @click="toCompletePersonalInfo">完善</span>
-                	<span class="grey">></span>
+                	<span class="grey"><img class="arrowRightIcon" :src="imgPath+'arrowRightIcon.png'"></span>
                 </div>
             </div>
             <div class="businessIntroduction">
@@ -39,7 +39,7 @@
             </div>
             <div class="historyGoods" @click="toHistoryPersonal">
                 已发盘<span class="blue">16</span>次
-                <span class="fr">></span>
+                <span class="fr"><img class="arrowRightIcon" :src="imgPath+'arrowRightIcon.png'"></span>
             </div>
         </div>
         
@@ -110,11 +110,17 @@ export default {
     margin:0 0.2rem;
     line-height: 1.5;
     border-top: 1px solid @lightGrey;
+
 }
 .companyMainPage{
     position: fixed;
     top: 0;
     bottom:0;
     background: @backGrey;
+}
+.arrowRightIcon{
+    width: 0.2rem;
+    height: 0.2rem;
+    vertical-align: text-bottom;
 }
 </style>

@@ -10,26 +10,47 @@
     </div>
     
     <div class="personalCenter">
-      <router-link to="/personalCenter">
+      <div @click="toPersonalCenter">
         <img class="personalCenterImg" :src="imgPath+'personalCenter.png'">
-      </router-link>
+      </div>
     </div>
+    <v-shade class="shadeIndex6" v-show="shadeShow" @click.native="hideShade()"></v-shade>
+    <v-register :show="registerShow"></v-register>
   </div>
 </template>
 
 <script>
+import shade from '@/components/common/shade'
+import register from '@/components/common/register'
 export default {
   name: 'nav',
   data () {
     return {
       imgPath:"../../static/img/",
+      shadeShow:false,
+      registerShow:false,
     }
+  },
+  components: {
+    'v-shade': shade,
+    'v-register': register,
   },
   created(){
     
   },
   methods:{
-    
+    hideShade(){
+      this.shadeShow=false;
+      this.registerShow=false;
+    },
+    toPersonalCenter(){
+      if (this.$store.state.isBind==0) {
+        this.shadeShow=true;
+        this.registerShow=true;
+      }else{
+        this.$router.push({ name: 'personalCenter'});
+      }
+    }
   }
 }
 </script>
@@ -37,7 +58,7 @@ export default {
 <style lang='less' scoped>
 @import '../assets/css/common.less';
 .nav{
-    z-index: 5;
+    z-index: 6;
     position: fixed;
     background: white;
     top: 0;
@@ -79,5 +100,8 @@ export default {
     width: 0.32rem;
     background-color: @blue;
   }
+}
+.shadeIndex6{
+  z-index: 6;
 }
 </style>

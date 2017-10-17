@@ -33,7 +33,7 @@
             </div>
             <div class="historyGoods" @click="toHistoryCompany">
                 已发盘<span class="blue">{{companyData.PubNum}}</span>次
-                <span class="fr">></span>
+                <span class="fr"><img class="arrowRightIcon" :src="imgPath+'arrowRightIcon.png'"></span>
             </div>
         </div>
         
@@ -129,6 +129,10 @@ export default {
     margin:0 0.3rem;
     line-height: 1.5;
     border-top: 1px solid @lightGrey;
+    .arrowRightIcon{
+        width: 0.2rem;
+        height: 0.2rem;
+    }
 }
 .companyMainPage{
     position: fixed;

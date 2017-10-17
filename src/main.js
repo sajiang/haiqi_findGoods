@@ -18,6 +18,8 @@ const store = new Vuex.Store({
   state: {
     url:"http://192.168.0.198:86/api/",
     portlist:[],
+    openId:"oRQW6t4QoNaCFWxdCf0CaUeIn1qw",
+    isBind:0,
   },
  
 })

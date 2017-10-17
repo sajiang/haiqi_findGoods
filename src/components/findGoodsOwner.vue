@@ -48,16 +48,16 @@
 			找货戳以下货主试试
 		</div>
 		<div class="goodsCompanyList">
-			<div class="goodsCompany" v-for="(i,index) in 4">
+			<div class="goodsCompany" v-for="(item,index) in goodsOwnerList">
 				<div class="clearfix titleInfo">
 					<div class="fl mgr5">
 						<img class="logo" :src="imgPath+'logo.png'">
 					</div>
 					<div class="fl mgl5">
-						<div class="font16">耀辉船务有限公司</div>
+						<div class="font16">{{item.Company}}</div>
 						<div class="font12 grey mgt5">
-							<span>已注册一年</span>
-							<span class="mgl5">通话10次</span>
+							<span>已注册{{item.RegNum}}</span>
+							<span class="mgl5">通话{{item.ContactNum}}次</span>
 						</div>
 					</div>
 					<div class="fr font12 grey" @click="showCustomerServicePhone">纠错</div>
@@ -65,28 +65,28 @@
 				<div class="businessIntroduction">
 					<div>
 						<span class="title">主营航线：</span>
-						<span class="content">上海-广东，上海-张家口，上海-秦皇岛海-秦皇岛海-秦皇岛海-秦皇岛</span>
+						<span class="content">{{item.MainRoute}}</span>
 					</div>
 					<div>
 						<span class="title">主营货种：</span>
-						<span class="content">沙，石子，煤炭</span>
+						<span class="content">{{item.MainGoods}}</span>
 					</div>
 					<div>
 						<span class="title">主营吨位：</span>
-						<span class="content">15000-30000</span>
+						<span class="content">{{item.MainTon}}</span>
 					</div>
 				</div>
 				<div class="historyGoods" @click="toHistoryCompany(index)">
 					<span>已发货盘</span>
-					<span>105</span>
-					<span class="grey fr">></span>
+					<span>{{item.PubNum}}</span>
+					<span class="grey fr"><img class="arrowRightIcon" :src="imgPath+'arrowRightIcon.png'"></span>
 				</div>
 				<div class="contact">
-					<span class="telInfo" v-for="(i,index) in 2">
-						<span class="verticalMiddle">王先生</span>
+					<a :href="'tel:'+contacts.GoodsOwnerPhone" class="telInfo" v-for="contacts in item.GoodsOwnerList">
+						<span class="verticalMiddle">{{contacts.GoodsOwnerName}}</span>
 						<img class="tel verticalMiddle" :src="imgPath+'tel1.png'">
 						<span class="grey mgl5 mgr5" v-show="index<1">|</span>
-					</span>
+					</a>
 				</div>
 			</div>
 		</div>
@@ -158,6 +158,10 @@ export default {
 		  theEndVal:""
 		}
       },
+      goodsOwnerList:[],
+      pageIndex:1,
+      totalPage:0,
+      notLoading:false,
       goodsTypes:[
       {typeId:1,name:'煤焦类'},
       {typeId:2,name:'钢铁类'},
@@ -179,8 +183,42 @@ export default {
     if (window.localStorage.historySearchGoodserKeywordRecord) {
       this.historySearchGoodserKeywordRecord=window.localStorage.historySearchGoodserKeywordRecord.split(",");
     }
+    this.getGoodsOwnerList();
   },
   methods:{
+  	loadMore(){
+  		this.pageIndex++;
+  		this.getGoodsOwnerList();
+  	},
+  	getGoodsOwnerList(){
+  		var _this=this;
+  		var postData={
+  			Page: this.pageIndex,
+  			PageSize:10,
+  			StartRouteName:'',
+  			EndRouteName:'',
+  			GPID: 0,
+  			MinVolume:0,
+  			MaxVolume:0,
+  			OpenId:''
+  		};
+  		this.$http.post(this.$store.state.url+'Goods/GOO_GoodserCompanyList',postData)
+  		.then(function(response){
+  			_this.totalPage=response.data.RetData.TotalPage;
+  			if (_this.totalPage==_this.pageIndex) {
+  				_this.notLoading=true;
+  			}
+  			if (_this.pageIndex>1) {
+  				_this.goodsOwnerList=_this.goodsList.concat(response.data.RetData.GoodserCompanyList);
+  			}else{
+  				_this.goodsOwnerList=response.data.RetData.GoodserCompanyList;
+  			}
+  			
+  		})
+  		.catch(function(error){
+  			console.log(error);
+  		});
+  	},
   	showSearchOption(name) {
 		//如果点击部分已经选中
 		if (this.searchOption[name].show) {
@@ -481,6 +519,10 @@ export default {
 		.historyGoods{
 			padding: 0.1rem 0.05rem 0.1rem 0;
 			border-bottom: 1px solid @lightGrey;
+			.arrowRightIcon{
+				width: 0.2rem;
+				height: 0.2rem;
+			}
 		}
 		.contact{
 			color: @blue;

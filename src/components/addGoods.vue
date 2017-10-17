@@ -151,15 +151,20 @@ export default {
 	input{
 		border:none;
 		outline: none;
-		height: 0.35rem;
-		width: 50%;
+		height: 0.29rem;
+		width: 60%;
+		-webkit-appearance:none; 
+		background-color: white;
 	}
 	select{
-		width: 30%;
+		width: 25%;
 		margin-left: 0.1rem;
 		border:none;
 		outline: none;
-		padding:0 0.15rem;
+		padding:0 0.1rem;
+		height: 0.29rem;
+		background-color: white;
+		-webkit-appearance:none; 
 		option{
 			text-align: center;
 		}
