@@ -10,7 +10,7 @@
 			<span class="formName">验证码</span><!-- 
 		 --><span class="formInput">
 				<input class="numberCode" type="number" placeholder="请输入" v-model="numberCode">
-				<img class="fr numberCodeImg mgt10" :src="numberCodeSrc">
+				<img class="fr numberCodeImg mgt10" :src="numberCodeSrc" @click="getImgNumberCode">
 			</span>
 		</div>
 		<div class="formItem">
@@ -20,6 +20,7 @@
 				<span class="getMobileCode fr mgt10" @click="getMobileCode">获取验证码{{countDownNumber!=0?countDownNumber+'s':''}}</span>
 			</span>
 		</div>
+		<div class="bind" @click="bindPhoneNumber">绑定手机</div>
     </div>
 </template>
 
@@ -34,6 +35,8 @@ export default {
 			code:"",
 			numberCodeSrc:"",
 			countDownNumber:0,
+			msgId:"",
+			clearNum:""
 		}
 	},
 	created(){
@@ -55,27 +58,27 @@ export default {
 		},
 		getMobileCode() {
 			var _this = this;
-			if (!/^1\d{10}$/.test(this.bindPhoneNumberData.phoneNumber)) {
-				alert("手机号格式不正确");
+			if (!/^1\d{10}$/.test(this.phoneNumber)) {
+				this.$Message.error("手机号格式不正确");
 				return;
 			}
-			if (this.bindPhoneNumberData.countDownNumber > 0) {
+			if (this.countDownNumber > 0) {
 				return;
 			}
 			var _this = this;
-			axios.post(this.url + 'Common/COM_CreateMobileCode', {
-				"mobileNum": this.bindPhoneNumberData.phoneNumber,
-				"pictureCode": this.bindPhoneNumberData.numberCode,
+			this.$http.post('http://weixin.sspp.co/api/' + 'Common/COM_CreateMobileCode', {
+				"mobileNum": this.phoneNumber,
+				"pictureCode": this.numberCode,
 				"isTypeText": "绑定用户",
-				"openId": this.openId
+				"openId": this.$store.state.openId
 			}).then(function (response) {
 				if (response.data.RetCode == 0) {
-					_this.bindPhoneNumberData.msgId = response.data.RetData.msgId;
-					_this.bindPhoneNumberData.countDownNumber = 60;
-					_this.bindPhoneNumberData.clearNum = setInterval(function () {
-						app.bindPhoneNumberData.countDownNumber += -1;
-						if (app.bindPhoneNumberData.countDownNumber == 0) {
-							clearInterval(app.bindPhoneNumberData.clearNum);
+					_this.msgId = response.data.RetData.msgId;
+					_this.countDownNumber = 60;
+					_this.clearNum = setInterval(function () {
+						_this.countDownNumber += -1;
+						if (_this.countDownNumber == 0) {
+							clearInterval(_this.clearNum);
 						}
 					}, 1000);
 				}
@@ -85,25 +88,27 @@ export default {
 		},
 		bindPhoneNumber() {
 			var _this = this;
-			this.loading = true;
-			axios.post(this.url + 'Common/COM_BindUserInfo', {
-				"msgId": this.bindPhoneNumberData.msgId,
-				"msgCode": this.bindPhoneNumberData.code,
-				"openId": this.openId
+			this.$http.post('http://weixin.sspp.co/api/' + 'Common/COM_BindUserInfo', {
+				"msgId": this.msgId,
+				"msgCode": this.code,
+				"openId": this.$store.state.openId
 			}).then(function (response) {
 				if (response.data.RetCode == 0) {
-					_this.hidePopup();
-					_this.isBind = 1;
+					_this.$store.state.isBind = 1;
 					_this.setCookie("isBind", 1);
+					_this.$router.push({ name: 'personalCenter'});
 				} else {
-					_this.bindPhoneNumberData.errorCode = true;
-					_this.bindPhoneNumberData.errorMsg = response.data.RetMsg;
+					_this.$Message.error(response.data.RetMsg)
 				}
-				_this.loading = false;
 			}).catch(function (error) {
 				console.log(error);
 			});
 		},
+        setCookie(c_name, value) {
+            var exdate = new Date();
+            exdate.setTime(exdate.getTime() + 3600000);
+            document.cookie = c_name + "=" + escape(value) + ";expires=" + exdate.toGMTString();
+        },
 	}
 }
 </script>
@@ -119,6 +124,7 @@ export default {
 	margin:-1rem 0 0 -1.5rem;
 	height: 2rem;
 	width: 3rem;
+	padding-top: 0.1rem;
 }
 .formItem{
 	background: white;
@@ -153,5 +159,12 @@ export default {
 	.rounded-corners(20px);
 	line-height: 1;
 	padding: 0.05rem;
+}
+.bind{
+	color: white;
+	background-color: @blue;
+	line-height: 2.5;
+	margin:0.2rem 0.1rem 0 0.1rem;
+	.rounded-corners();
 }
 </style>

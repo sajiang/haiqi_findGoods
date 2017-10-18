@@ -3,22 +3,22 @@
 		<div class="formItem">
 			<span class="formName">公司*</span><!-- 
 		 --><span class="formInput">
-				<input type="number" placeholder="请填写" v-model="companyName">
+				<input type="text" placeholder="请填写" v-model="companyName">
 			</span>
 		</div>
 		<div class="formItem">
 			<span class="formName">您的称呼*</span><!-- 
 		 --><span class="formInput">
-				<input type="number" placeholder="请填写" v-model="name">
+				<input type="text" placeholder="请填写" v-model="name">
 			</span>
 		</div>
 		<div class="formItem">
 			<span class="formName">联系电话</span><!-- 
 		 --><span class="formInput">
-				<span>18355648235</span>
+				<span>{{phoneNumber}}</span>
 			</span>
 		</div>
-		<div class="sureBtn" @click="">完成</div>
+		<div class="sureBtn" @click="submitPersonalInfo">完成</div>
 	</div>
 </template>
 <script>
@@ -28,11 +28,29 @@ export default {
    		return {
    			companyName:"",
    			name:"",
-   			phoneNumber:"",
+   			phoneNumber:"18355648235",
     	}
     },
     methods:{
-    	
+    	submitPersonalInfo(){
+    		var _this=this;
+    		var postData={
+    			OpenId:this.$store.state.openId,
+    			Company:this.companyName,
+    			NickName:this.name,
+    		};
+    		this.$http.post(this.$store.state.url+ 'Goods/GOO_GoodserEdit',postData)
+	  		.then(function (response) {
+	            if (response.data.RetCode == 0) {
+	                _this.$Message.success(response.data.RetMsg);
+	                _this.$router.go(-1)
+	            }else{
+	            	_this.$Message.error(response.data.RetMsg);
+	            }
+	        }).catch(function (error) {
+	            _this.$Message.error(error);
+	        });
+    	}
     }
 }
 </script>

@@ -2,8 +2,8 @@
 	<div class="addGoods">
 		<div class="formItem">
 			<span class="formName">物种*</span><!-- 
-		 --><span class="formInput">
-				<span>请选择</span>
+		 --><span class="formInput" @click="showGoodsType">
+				<span>{{goodsTypesName}}</span>
 				<span class="fr grey">></span>
 			</span>
 		</div>
@@ -43,6 +43,8 @@
 		<v-port-select v-show="startPortShow" v-on:selectportdone="replaceStartPort" ></v-port-select>
 		<!-- 卸货港选项 -->
 		<v-port-select v-show="endPortShow" v-on:selectportdone="replaceEndPort" ></v-port-select>
+		<!-- 物种 -->
+		<v-goods-type-select v-show="goodsTypeShow" v-on:selectgoodstypedone="replaceGoodsType" ></v-goods-type-select>
 	</div>
 </template>
 <script>
@@ -56,11 +58,14 @@ export default {
    			shadeShow:false,
     		startPortShow:false,
     		endPortShow:false,
+    		goodsTypeShow:false,
     		ton:"",
     		startPortId:"",
     		startPortName:"请选择",
     		endPortId:"",
     		endPortName:"请选择",
+    		goodsTypesName:"请选择",
+    		goodsTypesId:"",
     		loadDate:"",
     		deviationDays:""
     	}
@@ -79,9 +84,14 @@ export default {
     		this.endPortShow=true;
     		this.shadeShow=true;
     	},
+    	showGoodsType(){
+    		this.goodsTypeShow=true;
+    		this.shadeShow=true;
+    	},
     	hideShade(){
     		this.startPortShow=false;
     		this.endPortShow=false;
+    		this.goodsTypeShow=false;
     		this.shadeShow=false;
 		},
 		replaceStartPort(portInfo){
@@ -118,8 +128,49 @@ export default {
 		        this.endPortId=0;
 		    }
 	    },
+	    replaceGoodsType(goodsInfo){
+	    	this.shadeShow=false;
+	    	this.goodsTypeShow=false;
+	        this.goodsTypesName=goodsInfo[1].GSName;
+        	this.goodsTypesId=goodsInfo[1].CID;
+		    
+	    },
 	    submitNewGoods(){
-	    	this.$router.go(-1);
+	    	
+	    	var _this=this;
+	    	var postData={
+	    		GoodsTypesId:this.goodsTypesId,
+	    		CargoVolume:this.ton,
+	    		StartPortId:this.startPortId,
+	    		EndPortId:this.endPortId,
+	    		LoadDate:this.LoadDate,
+	    		LoadAddDay:this.deviationDays,
+	    		OpenId:this.$store.state.openId,
+	    	}
+	  		this.$http.post(this.$store.state.url+ 'Goods/GOO_AddGoods',postData)
+	  		.then(function (response) {
+	            if (response.data.RetCode == 0) {
+	                _this.$Message.success(response.data.RetMsg);
+	                //清空所有数据
+	                _this.shadeShow=false;
+					_this.startPortShow=false;
+					_this.endPortShow=false;
+					_this.goodsTypeShow=false;
+					_this.ton="";
+					_this.startPortId="";
+					_this.startPortName="请选择";
+					_this.endPortId="";
+					_this.endPortName="请选择";
+					_this.goodsTypesName="请选择";
+					_this.goodsTypesId="";
+					_this.loadDate="";
+    				_this.deviationDays="";
+	            }else{
+	            	_this.$Message.error(response.data.RetMsg);
+	            }
+	        }).catch(function (error) {
+	            _this.$Message.error(error);
+	        });
 	    }
     }
 }

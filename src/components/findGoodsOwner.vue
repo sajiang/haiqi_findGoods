@@ -31,7 +31,7 @@
 			<!-- 货种 -->
 			<div class="goodsType"  v-show="searchOption.goodsType.show">
 				<div v-for="(item,index) in goodsTypes" class="goodsTypeItemWrap">
-					<div class="goodsTypeItem" :class="searchOption.goodsType.goodsTypeIndexes.indexOf(index)>-1?'goodsTypeItemChosen':''" @click="replaceGoodsType(index)">{{item.name}}</div>
+					<div class="goodsTypeItem" :class="searchOption.goodsType.goodsTypeIndexes.indexOf(index)>-1?'goodsTypeItemChosen':''" @click="replaceGoodsType(index)">{{item.GPName}}</div>
 				</div>
 				
 			</div>
@@ -76,7 +76,7 @@
 						<span class="content">{{item.MainTon}}</span>
 					</div>
 				</div>
-				<div class="historyGoods" @click="toHistoryCompany(index)">
+				<div class="historyGoods" @click="toHistoryCompany(item.CompanyId)">
 					<span>已发货盘</span>
 					<span>{{item.PubNum}}</span>
 					<span class="grey fr"><img class="arrowRightIcon" :src="imgPath+'arrowRightIcon.png'"></span>
@@ -162,15 +162,7 @@ export default {
       pageIndex:1,
       totalPage:0,
       notLoading:false,
-      goodsTypes:[
-      {typeId:1,name:'煤焦类'},
-      {typeId:2,name:'钢铁类'},
-      {typeId:3,name:'木材类'},
-      {typeId:4,name:'食品类'},
-      {typeId:5,name:'矿石类'},
-      {typeId:6,name:'建设材料类'},
-      {typeId:7,name:'其他材料'},
-      ],
+      goodsTypes:[],
       portList:[],
       historySearchGoodserKeywordRecord:[],
     }
@@ -184,23 +176,29 @@ export default {
       this.historySearchGoodserKeywordRecord=window.localStorage.historySearchGoodserKeywordRecord.split(",");
     }
     this.getGoodsOwnerList();
+    this.getGoodsTypes();
   },
   methods:{
   	loadMore(){
   		this.pageIndex++;
   		this.getGoodsOwnerList();
+
   	},
   	getGoodsOwnerList(){
   		var _this=this;
+  		var GPIDs=[];
+  		for(var i =0 ;i <this.searchOption.goodsType.goodsTypeIndexes.length;i++){
+  			GPIDs.push(this.goodsTypes[this.searchOption.goodsType.goodsTypeIndexes[i]].GPID)
+  		}
   		var postData={
   			Page: this.pageIndex,
   			PageSize:10,
-  			StartRouteName:'',
-  			EndRouteName:'',
-  			GPID: 0,
-  			MinVolume:0,
-  			MaxVolume:0,
-  			OpenId:''
+  			StartRouteName:this.searchOption.shippingLine.startPortName,
+  			EndRouteName:this.searchOption.shippingLine.endPortName,
+  			GPID: GPIDs,
+  			MinVolume:this.searchOption.weightRange.theStartVal,
+  			MaxVolume:this.searchOption.weightRange.theEndVal,
+  			OpenId:this.$store.state.openId
   		};
   		this.$http.post(this.$store.state.url+'Goods/GOO_GoodserCompanyList',postData)
   		.then(function(response){
@@ -218,6 +216,19 @@ export default {
   		.catch(function(error){
   			console.log(error);
   		});
+  	},
+  	getGoodsTypes(){
+  		var _this=this;
+  		this.$http.get(this.$store.state.url+ 'Common/COM_GoodsTypesAllInfo?Type=1')
+  		.then(function (response) {
+            if (response.data.RetCode == 0) {
+                _this.goodsTypes=response.data.RetData;
+            }else{
+                _this.$Message.error(response.data.RetMsg);
+            }
+        }).catch(function (error) {
+            _this.$Message.error(error);
+        });
   	},
   	showSearchOption(name) {
 		//如果点击部分已经选中
@@ -284,11 +295,12 @@ export default {
     	}
     	this.searchOption.goodsType.showstr='';
     	for (var i = this.searchOption.goodsType.goodsTypeIndexes.length - 1; i >= 0; i--) {
-    		this.searchOption.goodsType.showstr+=this.goodsTypes[this.searchOption.goodsType.goodsTypeIndexes[i]].name;
+    		this.searchOption.goodsType.showstr+=this.goodsTypes[this.searchOption.goodsType.goodsTypeIndexes[i]].GPName;
     	}
     	if (this.searchOption.goodsType.showstr=='') {
     		this.searchOption.goodsType.showstr="货种";
     	}
+    	this.getGoodsOwnerList();
     },
     replaceWeightRange(){
     	if (parseInt(this.searchOption.weightRange.theStartVal)<parseInt(this.searchOption.weightRange.theEndVal)) {
@@ -298,6 +310,7 @@ export default {
 		}else{
 			this.$Message.error('起始吨位不能大于截止吨位');
 		}
+		this.getGoodsOwnerList();
     },
     replaceShippingLine(){
     	if (this.searchOption.shippingLine.startPortName==""&&this.searchOption.shippingLine.endPortName=="") {
@@ -307,6 +320,7 @@ export default {
     		this.shadeShow=false;
     		this.searchOption.shippingLine.show=false;
     	}
+    	this.getGoodsOwnerList();
     },
     clearShippingLine(){
     	this.searchOption.shippingLine.startPortName="";
@@ -316,11 +330,13 @@ export default {
 	    this.searchOption.shippingLine.showstr='航线';
 	    this.shadeShow=false;
     	this.searchOption.shippingLine.show=false;
+    	this.getGoodsOwnerList();
 	},
     clearWeightRange(){
     	this.searchOption.weightRange.showstr="货量";
     	this.searchOption.weightRange.theStartVal="";
     	this.searchOption.weightRange.theEndVal="";
+    	this.getGoodsOwnerList();
     },
     hideShade(){
 		this.shadeShow=false;

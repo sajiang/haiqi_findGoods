@@ -52,14 +52,14 @@ export default {
     data () {
         return {
             imgPath:"../../static/img/",
-      
+           
         }
     },
     created(){
     },
     methods:{
         toHistoryPersonal(){
-            this.$router.push({ name: 'historyPersonal', params:{personId:1}});
+            this.$router.push({ name: 'historyPersonal', params:{goodsOwnerId:2695}});
         },
         toCompletePersonalInfo(){
             this.$router.push({ name: 'completePersonalInfo'});

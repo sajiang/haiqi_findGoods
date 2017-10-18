@@ -1,24 +1,27 @@
 <template>
     <div class="historyCompany">
-        <div class="goodsList" >
-            <div class="goodsItem" v-for="(i,index) in 3" @click="toCompanyMainPage(index)">
+        <div class="goodsList" v-infinite-scroll="loadMore"
+             infinite-scroll-disabled="notLoading"
+             infinite-scroll-distance="10"
+             infinite-scroll-immediate-check="false">
+            <div class="goodsItem" v-for="(item,index) in goodsList">
                 <div>
-                    <span class="blue inlineBlock mgt10">王先生</span>
-                    <span class="fr publishedTime">2分前</span>
+                    <span class="blue inlineBlock mgt10">{{item.GoodsOwnerName}}</span>
+                    <span class="fr publishedTime">{{item.EditDate}}</span>
                 </div>
                 <div class="flowDirection">
-                    <div class="inlineBlock middle startPort">曹妃甸</div>
+                    <div class="inlineBlock middle startPort">{{item.StartPortName}}</div>
                     <div class="inlineBlock arrow">
-                        <div class="font12 goodsType">沙子</div>
+                        <div class="font12 goodsType">{{item.GoodsTypeName}}</div>
                         <div class="imgWrap"><img :src="imgPath+'arrowRight.png'" class="arrowRight"></div>
-                        <div class="font12">12000±2000</div>
+                        <div class="font12">{{item.GoodsVolume}}±{{item.AddVolume}}</div>
                     </div>
-                    <div class="inlineBlock middle endPort">张家港</div>
-                    <div class="inlineBlock middle blue time">12-09±3</div>
+                    <div class="inlineBlock middle endPort">{{item.EndPortName}}</div>
+                    <div class="inlineBlock middle blue time">{{item.LoadDate}}±{{item.LoadAddDay}}</div>
                 </div>
                 <div class="font12 grey flex flex-direction-row">
-                    <span><img class="dot" :src="imgPath+'dot.png'"/>已注册1年</span>
-                    <span class="contactFrequency"><img class="dot" :src="imgPath+'dot.png'"/>被联系10次</span>
+                    <span><img class="dot" :src="imgPath+'dot.png'"/>已注册{{item.RegNum}}</span>
+                    <span class="contactFrequency"><img class="dot" :src="imgPath+'dot.png'"/>被联系{{item.ContactNum}}次</span>
                     
                 </div>
 				<div class="dustbin"><img class="" :src="imgPath+'dustbin.png'"></div>
@@ -36,17 +39,49 @@ export default {
     data () {
         return {
             imgPath:"../../static/img/",
-            companyId:'',
-
+            goodsOwnerId:'',
+            goodsList:[],
+            pageIndex:1,
+            totalPage:0,
+            notLoading:false,
         }
     },
     created(){
-        this.companyId=this.$route.params.companyId;
+        this.goodsOwnerId=this.$route.params.goodsOwnerId;
+        this.getPersonalGoodsList();
     },
     methods:{
+        loadMore(){
+            this.pageIndex++;
+            this.getPersonalGoodsList();
+        },
     	toAddGoods(){
     		this.$router.push({ name: 'addGoods'});
     	},
+        getPersonalGoodsList(){
+            var _this = this;
+            this.$http.post(this.$store.state.url+ 'Goods/GOO_GoodsListAlreadyReleasedInfo', {
+                "OpenId": this.$store.state.openId,
+                "GoodsOwerId":this.goodsOwnerId,
+                "Page":this.pageIndex,
+                "PageSize":10,
+            }).then(function (response) {
+                if (response.data.RetCode == 0) {
+                    if (_this.totalPage==_this.pageIndex) {
+                        _this.notLoading=true;
+                    }
+                    if (_this.pageIndex>1) {
+                        _this.goodsList=_this.goodsList.concat(response.data.RetData.GoodsList);
+                    }else{
+                        _this.goodsList=response.data.RetData.GoodsList;
+                    }
+                }else{
+                    _this.$Message.error(response.data.RetMsg);
+                }
+            }).catch(function (error) {
+                this.$Message.error(error);
+            });
+        },
     }
 }
 </script>

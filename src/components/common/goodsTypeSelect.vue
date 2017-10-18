@@ -1,5 +1,5 @@
 <template>
-  <div class="goodsTypeSelect">
+  <div class="portSelect">
     <div class="titles flex flex-direction-row">
       <div class="title flex-1">大类</div>
       <div class="title flex-1">小类</div>
@@ -7,86 +7,80 @@
     <div class=" flex flex-direction-row list height100">
       <div class="flex-1 height100">
       
-      <div @click="chosen('0',index)" class="item" :class="proviceIndex==index?'selected':''" v-for="(item,index) in curProvices">{{item.proviceName}}</div> 
+      <div @click="chosen('0',index)" class="item" :class="bigIndex==index?'selected':''" v-for="(item,index) in curBigType">{{item.GPName}}</div> 
       </div>
       <div class="flex-1 height100">
       
-      <div @click="chosen('1',index)"  class="item" :class="cityIndex==index?'selected':''"  v-for="(item,index) in curCitys">{{item.cityName}}</div>
+      <div @click="chosen('1',index)"  class="item" :class="smallIndex==index?'selected':''"  v-for="(item,index) in curSmallType">{{item.GSName}}</div>
       </div>
     </div>
-    <div class="flex flex-direction-row bottom">
-      <div class="flex-1 reset" @click="reset">重置</div>
-      <div class="flex-1 confirmSelect" @click="confirmSelect">确定</div>
-    </div>
+   
   </div>
 </template>
 
 <script>
 export default {
-  name: 'goodsTypeSelect',
+  name: 'portSelect',
   data () {
     return {
-      proviceIndex:0,
-      cityIndex:-1,
+      bigIndex:0,
+      smallIndex:-1,
+      goodsTypeList:[],
     }
   },
   computed:{
-    portlist () {
-      return this.$store.state.portlist;
-    },
-    curProvices(){
-      if (this.portlist&&this.portlist.length>0) {
-        var obj=JSON.parse( JSON.stringify( this.portlist ) );
+    curBigType(){
+      if (this.goodsTypeList&&this.goodsTypeList.length>0) {
+        var obj=JSON.parse( JSON.stringify( this.goodsTypeList ) );
         return obj;
       }
     },
-    curCitys(){
-      if (this.proviceIndex<0) {
+    curSmallType(){
+      if (this.bigIndex<0) {
         return [];
       }
-      if (this.portlist&&this.portlist.length>0) {
-        return this.curProvices[this.proviceIndex].citys;
+      if (this.goodsTypeList&&this.goodsTypeList.length>0) {
+        return this.curBigType[this.bigIndex].GSList;
       }
     }
   },
+  created(){
+    this.getGoodsTypeList();
+  },
   methods:{
+    getGoodsTypeList(){
+      var _this=this;
+      this.$http.get(this.$store.state.url+ 'Common/COM_GoodsTypesAllInfo?Type=0')
+      .then(function (response) {
+            if (response.data.RetCode == 0) {
+                _this.goodsTypeList=response.data.RetData;
+            }else{
+                _this.$Message.error(response.data.RetMsg);
+            }
+        }).catch(function (error) {
+            _this.$Message.error(error);
+        });
+    },
     chosen(type,index){
       //选择省份
       if (type==0) {
-        this.proviceIndex=index;
-        this.cityIndex=-1;
+        this.bigIndex=index;
+        this.smallIndex=-1;
       }
       //选择市
       else if (type==1) {
-        this.cityIndex=index;
-        this.$emit("selectportdone",[
+        this.smallIndex=index;
+        this.$emit("selectgoodstypedone",[
           {
-            proviceId:this.portlist[this.proviceIndex].proviceId,
-            proviceName:this.portlist[this.proviceIndex].proviceName
+            GPID:this.goodsTypeList[this.bigIndex].GPID,
+            GPName:this.goodsTypeList[this.bigIndex].GPName
           },{
-            cityId:this.portlist[this.proviceIndex].citys[this.cityIndex].cityId,
-            cityName:this.portlist[this.proviceIndex].citys[this.cityIndex].cityName
+            CID:this.goodsTypeList[this.bigIndex].GSList[this.smallIndex].CID,
+            GSName:this.goodsTypeList[this.bigIndex].GSList[this.smallIndex].GSName
           }]);
       }
     },
-    reset(){
-      this.proviceIndex=-1;
-      this.cityIndex=-1;
-    },
-    //只选了省 或者 什么都没选
-    confirmSelect(){
-      if (this.proviceIndex==-1) {
-        //什么都没选
-        this.$emit("selectportdone",[]);
-      }else{
-        //只选了省
-        this.$emit("selectportdone",[{
-          proviceId:this.portlist[this.proviceIndex].proviceId,
-          proviceName:this.portlist[this.proviceIndex].proviceName
-        }]);
-      }
-      
-    }
+    
   }
 }
 </script>
@@ -94,13 +88,13 @@ export default {
 <style lang="less" scoped>
 @import '../../assets/css/common.less';
 .portSelect{
-	background-color: white;
-	
-	position: fixed;
-	width: 80%;
-	height: 100%;
-	top:0em;
-	z-index: 10;
+  background-color: white;
+  
+  position: fixed;
+  width: 80%;
+  height: 100%;
+  top:0em;
+  z-index: 10;
   .titles{
     padding-left: 0.5em;
     .title{
@@ -115,14 +109,14 @@ export default {
   }
 }
 .height100{
-	height: 100%;
-	overflow: scroll;
+  height: 100%;
+  overflow: scroll;
 }
 .item{
-	margin-top: 1.3em;
+  margin-top: 1.3em;
 }
 .selected{
-	color:@blue !important;
+  color:@blue !important;
 }
 .bottom{
   color: white;
