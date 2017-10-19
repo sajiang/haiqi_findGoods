@@ -132,7 +132,7 @@ export default {
 	    	this.shadeShow=false;
 	    	this.goodsTypeShow=false;
 	        this.goodsTypesName=goodsInfo[1].GSName;
-        	this.goodsTypesId=goodsInfo[1].CID;
+        	this.goodsTypesId=goodsInfo[1].GSID;
 		    
 	    },
 	    submitNewGoods(){
@@ -143,7 +143,7 @@ export default {
 	    		CargoVolume:this.ton,
 	    		StartPortId:this.startPortId,
 	    		EndPortId:this.endPortId,
-	    		LoadDate:this.LoadDate,
+	    		LoadDate:this.loadDate,
 	    		LoadAddDay:this.deviationDays,
 	    		OpenId:this.$store.state.openId,
 	    	}

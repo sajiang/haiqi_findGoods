@@ -75,7 +75,7 @@ export default {
             GPID:this.goodsTypeList[this.bigIndex].GPID,
             GPName:this.goodsTypeList[this.bigIndex].GPName
           },{
-            CID:this.goodsTypeList[this.bigIndex].GSList[this.smallIndex].CID,
+            GSID:this.goodsTypeList[this.bigIndex].GSList[this.smallIndex].GSID,
             GSName:this.goodsTypeList[this.bigIndex].GSList[this.smallIndex].GSName
           }]);
       }

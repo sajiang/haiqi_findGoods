@@ -101,11 +101,17 @@
 			<div class="clearfix">
 				<span class="searchBox">
 					<span><img :src="imgPath+'searchSmall.png'"></span>
-					<input type="" name="" placeholder="公司名称搜索" v-model="keyword" @keyup.enter="recordAndSearch">
+					<input type="" name="" placeholder="公司名称搜索" v-model="keyword" @input="preKeywordSearch">
 					<img :src="imgPath+'delete.png'" @click="keyword=''">
 				</span>
 				<span class="fr cancel" @click="keywordSearchShow=false">取消</span>
 			</div>
+			<div class="waitToSelectCompanyListWrap" v-show="waitToSelectCompanyListShow">
+				<div class="waitToSelectCompanyList">
+					<div class="waitToSelectCompany" @click="keywordSearch(item.CompanyName)" v-for='item in waitToSelectCompanyList'>{{item.CompanyName}}</div>
+				</div>
+			</div>
+			
 			<div class="historySearch">
 				<div>历史搜索</div>
 				<div>
@@ -133,6 +139,7 @@ export default {
       customerServicePhoneShow:false,
       keywordSearchShow:false,
       keyword:'',
+      keywordId:0,
       headerZIndex:4,
       isHighShadowIndex:false,
       searchOption:{
@@ -164,6 +171,8 @@ export default {
       notLoading:false,
       goodsTypes:[],
       portList:[],
+      waitToSelectCompanyList:[],
+      waitToSelectCompanyListShow:false,
       historySearchGoodserKeywordRecord:[],
     }
   },
@@ -196,6 +205,7 @@ export default {
   			StartRouteName:this.searchOption.shippingLine.startPortName,
   			EndRouteName:this.searchOption.shippingLine.endPortName,
   			GPID: GPIDs,
+  			CompanyId:this.keywordId,
   			MinVolume:this.searchOption.weightRange.theStartVal,
   			MaxVolume:this.searchOption.weightRange.theEndVal,
   			OpenId:this.$store.state.openId
@@ -351,7 +361,28 @@ export default {
     	this.keywordSearchShow=true;
     	this.keyword="";
     },
+    preKeywordSearch(){
+    	var _this=this;
+  		this.$http.post(this.$store.state.url+ 'Goods/GOO_GoodserCompanyListSearchItem',{SearchWord:this.keyword})
+  		.then(function (response) {
+            if (response.data.RetCode == 0) {
+                _this.waitToSelectCompanyList=response.data.RetData;
+                _this.waitToSelectCompanyListShow=true;
+            }else{
+                _this.$Message.error(response.data.RetMsg);
+                _this.waitToSelectCompanyList=[];
+            }
+        }).catch(function (error) {
+            _this.$Message.error(error);
+        });
+    },
+    keywordSearch(keyword){
+    	this.waitToSelectCompanyListShow=false;
+    	this.keyword=keyword;
+    	this.recordAndSearch();
+    },
     recordAndSearch(){
+    	//record
 		if (window.localStorage.historySearchGoodserKeywordRecord) {
 			//搜索的值在历史记录中有出现
 			if (window.localStorage.historySearchGoodserKeywordRecord.indexOf(this.keyword)>-1) {
@@ -376,6 +407,32 @@ export default {
 			window.localStorage.historySearchGoodserKeywordRecord=this.keyword;
 		}
 		this.historySearchGoodserKeywordRecord=window.localStorage.historySearchGoodserKeywordRecord.split(",");
+		//search
+		var _this=this;
+		this.$http.post(this.$store.state.url+ 'Goods/GOO_GoodserCompanyAccurateSearch',{CompanyName:this.keyword})
+  		.then(function (response) {
+            if (response.data.RetCode == 0) {
+                _this.goodsOwnerList=[];
+                _this.goodsOwnerList.push(response.data.RetData);
+            }else{
+                _this.$Message.error(response.data.RetMsg);
+                _this.goodsOwnerList=[];
+            }
+        }).catch(function (error) {
+            _this.$Message.error(error);
+        });
+		this.keywordSearchShow=false;
+		//清空之前的选项,但是不重新搜索
+		this.searchOption.goodsType.showstr="货种";
+		this.searchOption.goodsType.goodsTypeIndexes=[];
+		this.searchOption.shippingLine.startPortName="";
+	    this.searchOption.shippingLine.startPortId=0;
+    	this.searchOption.shippingLine.endPortName="";
+	    this.searchOption.shippingLine.endPortId=0;
+	    this.searchOption.shippingLine.showstr='航线';
+	    this.searchOption.weightRange.showstr="货量";
+    	this.searchOption.weightRange.theStartVal="";
+    	this.searchOption.weightRange.theEndVal="";
     },
     quickSearch(item){
 		this.keyword=item;
@@ -385,6 +442,31 @@ export default {
 		historySearchGoodserKeywordRecord.unshift(this.keyword);
 		window.localStorage.historySearchGoodserKeywordRecord=historySearchGoodserKeywordRecord.join(",");
 		this.historySearchGoodserKeywordRecord=window.localStorage.historySearchGoodserKeywordRecord.split(",");
+		var _this=this;
+		this.$http.post(this.$store.state.url+ 'Goods/GOO_GoodserCompanyAccurateSearch',{CompanyName:this.keyword})
+  		.then(function (response) {
+            if (response.data.RetCode == 0) {
+                _this.goodsOwnerList=[];
+                _this.goodsOwnerList.push(response.data.RetData);
+            }else{
+                _this.$Message.error(response.data.RetMsg);
+                _this.goodsOwnerList=[];
+            }
+        }).catch(function (error) {
+            _this.$Message.error(error);
+        });
+		this.keywordSearchShow=false;
+		//清空之前的选项,但是不重新搜索
+		this.searchOption.goodsType.showstr="货种";
+		this.searchOption.goodsType.goodsTypeIndexes=[];
+		this.searchOption.shippingLine.startPortName="";
+	    this.searchOption.shippingLine.startPortId=0;
+    	this.searchOption.shippingLine.endPortName="";
+	    this.searchOption.shippingLine.endPortId=0;
+	    this.searchOption.shippingLine.showstr='航线';
+	    this.searchOption.weightRange.showstr="货量";
+    	this.searchOption.weightRange.theStartVal="";
+    	this.searchOption.weightRange.theEndVal="";
     },
     showCustomerServicePhone(){
     	this.customerServicePhoneShow=true;
@@ -630,4 +712,19 @@ export default {
 		}
 	}
 }
+.waitToSelectCompanyListWrap{
+	position: relative;
+	.waitToSelectCompanyList{
+		position: absolute;
+		top: 0;
+		left: 0.1rem;
+		background-color: white;
+		width: 2.7rem;
+		.waitToSelectCompany{
+			padding: 0.1rem;
+			border-bottom: 1px dashed @lightGrey;
+		}
+	}
+}
+
 </style>

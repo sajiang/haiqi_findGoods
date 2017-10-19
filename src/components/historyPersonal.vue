@@ -6,25 +6,25 @@
              infinite-scroll-immediate-check="false">
             <div class="goodsItem" v-for="(item,index) in goodsList">
                 <div>
-                    <span class="blue inlineBlock mgt10">{{item.GoodsOwnerName}}</span>
+                    <span class=" inlineBlock mgt10" :class="item.IsExpire?'grey':'blue'">{{item.GoodsOwnerName}}</span>
                     <span class="fr publishedTime">{{item.EditDate}}</span>
                 </div>
                 <div class="flowDirection">
-                    <div class="inlineBlock middle startPort">{{item.StartPortName}}</div>
+                    <div class="inlineBlock middle startPort" :class="item.IsExpire?'grey':''">{{item.StartPortName}}</div>
                     <div class="inlineBlock arrow">
-                        <div class="font12 goodsType">{{item.GoodsTypeName}}</div>
+                        <div class="font12 goodsType" :class="item.IsExpire?'grey':''">{{item.GoodsTypeName}}</div>
                         <div class="imgWrap"><img :src="imgPath+'arrowRight.png'" class="arrowRight"></div>
-                        <div class="font12">{{item.GoodsVolume}}±{{item.AddVolume}}</div>
+                        <div class="font12" :class="item.IsExpire?'grey':''">{{item.GoodsVolume}}±{{item.AddVolume}}</div>
                     </div>
-                    <div class="inlineBlock middle endPort">{{item.EndPortName}}</div>
-                    <div class="inlineBlock middle blue time">{{item.LoadDate}}±{{item.LoadAddDay}}</div>
+                    <div class="inlineBlock middle endPort" :class="item.IsExpire?'grey':''">{{item.EndPortName}}</div>
+                    <div class="inlineBlock middle time" :class="item.IsExpire?'grey':'blue'" >{{item.LoadDate}}±{{item.LoadAddDay}}</div>
                 </div>
                 <div class="font12 grey flex flex-direction-row">
                     <span><img class="dot" :src="imgPath+'dot.png'"/>已注册{{item.RegNum}}</span>
                     <span class="contactFrequency"><img class="dot" :src="imgPath+'dot.png'"/>被联系{{item.ContactNum}}次</span>
                     
                 </div>
-				<div class="dustbin"><img class="" :src="imgPath+'dustbin.png'"></div>
+				<div class="dustbin" @click="deleteGoodsItem(item.GoodsListId)" v-if="!item.IsExpire"><img class="" :src="imgPath+'dustbin.png'"></div>
             </div>
         </div>
         <div class="addGoods">
@@ -51,6 +51,23 @@ export default {
         this.getPersonalGoodsList();
     },
     methods:{
+        deleteGoodsItem(goodsListId){
+            var _this = this;
+            this.$http.post(this.$store.state.url+ 'Goods/GOO_GoodsListDelete', {
+                "OpenId": this.$store.state.openId,
+                "GoodsListId":goodsListId,
+            }).then(function (response) {
+                if (response.data.RetCode == 0) {
+                    _this.$Message.success(response.data.RetMsg);
+                    _this.pageIndex=1;
+                    _this.getPersonalGoodsList()
+                }else{
+                    _this.$Message.error(response.data.RetMsg);
+                }
+            }).catch(function (error) {
+                _this.$Message.error(error);
+            });
+        },
         loadMore(){
             this.pageIndex++;
             this.getPersonalGoodsList();
@@ -79,7 +96,7 @@ export default {
                     _this.$Message.error(response.data.RetMsg);
                 }
             }).catch(function (error) {
-                this.$Message.error(error);
+                _this.$Message.error(error);
             });
         },
     }

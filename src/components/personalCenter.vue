@@ -1,20 +1,20 @@
 <template>
-    <div class="companyMainPage">
+    <div class="personalCenter">
         <div class="companyInfo">
             <div class="clearfix basicInfo">
                 <div class="logo fl ">
-                    <img :src="imgPath+'logo.png'">
+                    <img :src="personalInfo.PicUrl?personalInfo.PicUrl:imgPath+'logo.png'">
                 </div>
                 <div class="fl mgl5">
                     <div class=""></div>
-                    <div class="">日照宏达海运有限公司</div>
+                    <div class="">{{personalInfo.Company}}</div>
                     <div class=" blue mgt5">
-                        <span class="mgr5">王先生</span>
-                        <span>18945157458</span>
+                        <span class="mgr5">{{personalInfo.GoodsOwerName}}</span>
+                        <span>{{personalInfo.MobilePhone}}</span>
                     </div>
                     <div class="font12 grey mgt5">
-                        <span class="mgr5">已注册1年</span>
-                        <span class="mgl5">被联系10次</span>
+                        <span class="mgr5">已注册{{personalInfo.RegNum}}</span>
+                        <span class="mgl5">被联系{{personalInfo.ContactNum}}次</span>
                     </div>
                 </div>
                 <div class="fr mgt20">
@@ -26,19 +26,19 @@
                 <div class="font15">主营业务</div>
                 <div class="grey mgt5">
                     <span class="title">主营航线：</span>
-                    <span class="content">上海-广东，上海-张家口，上海-秦皇岛海-秦皇岛海-秦皇岛海-秦皇岛</span>
+                    <span class="content">{{personalInfo.MainRoute}}</span>
                 </div>
                 <div class="grey">
                     <span class="title">主营货种：</span>
-                    <span class="content">沙，石子，煤炭</span>
+                    <span class="content">{{personalInfo.MainGoods}}</span>
                 </div>
                 <div class="grey">
                     <span class="title">主营吨位：</span>
-                    <span class="content">15000-30000</span>
+                    <span class="content">{{personalInfo.MainTon}}</span>
                 </div>
             </div>
             <div class="historyGoods" @click="toHistoryPersonal">
-                已发盘<span class="blue">16</span>次
+                已发盘<span class="blue">{{personalInfo.PubNum}}</span>次
                 <span class="fr"><img class="arrowRightIcon" :src="imgPath+'arrowRightIcon.png'"></span>
             </div>
         </div>
@@ -48,18 +48,33 @@
 
 <script>
 export default {
-    name: 'companyMainPage',
+    name: 'personalCenter',
     data () {
         return {
             imgPath:"../../static/img/",
+            personalInfo:{},
            
         }
     },
     created(){
+        this.getPersonalInfo();
     },
     methods:{
+        getPersonalInfo(){
+            var _this=this;
+            this.$http.get(this.$store.state.url+ 'Goods/GOO_GoodsDetails?OpenId='+this.$store.state.openId)
+            .then(function (response) {
+                if (response.data.RetCode == 0) {
+                    _this.personalInfo=response.data.RetData;
+                }else{
+                    _this.$Message.error(response.data.RetMsg);
+                }
+            }).catch(function (error) {
+                _this.$Message.error(error);
+            });
+        },
         toHistoryPersonal(){
-            this.$router.push({ name: 'historyPersonal', params:{goodsOwnerId:2695}});
+            this.$router.push({ name: 'historyPersonal', params:{goodsOwnerId:this.personalInfo.GoodsOwerId}});
         },
         toCompletePersonalInfo(){
             this.$router.push({ name: 'completePersonalInfo'});
@@ -70,7 +85,13 @@ export default {
 
 <style scoped lang="less">
 @import '../assets/css/common.less';
-
+.personalCenter{
+    position: fixed;
+    top: 0;
+    bottom:0;
+    background: @backGrey;
+    width: 100%;
+}
 .companyInfo{
     background-color: white;
     .blueBtn{
@@ -112,12 +133,7 @@ export default {
     border-top: 1px solid @lightGrey;
 
 }
-.companyMainPage{
-    position: fixed;
-    top: 0;
-    bottom:0;
-    background: @backGrey;
-}
+
 .arrowRightIcon{
     width: 0.2rem;
     height: 0.2rem;
