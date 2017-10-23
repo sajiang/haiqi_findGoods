@@ -53,7 +53,6 @@ export default {
             this.getCompanyGoodsList();
         },
         getCompanyGoodsList(){
-            
             var _this = this;
             this.$http.post(this.$store.state.url+ 'Goods/GOO_GoodsListCompanyAlreadyReleasedInfo', {
                 "OpenId": this.$store.state.openId,
@@ -62,6 +61,7 @@ export default {
                 "PageSize":10,
             }).then(function (response) {
                 if (response.data.RetCode == 0) {
+                    _this.totalPage=response.data.RetData.TotalPage;
                     if (_this.totalPage==_this.pageIndex) {
                         _this.notLoading=true;
                     }

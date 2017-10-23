@@ -67,7 +67,7 @@ export default {
     		goodsTypesName:"请选择",
     		goodsTypesId:"",
     		loadDate:"",
-    		deviationDays:""
+    		deviationDays:0
     	}
     },
 	components: {
@@ -136,15 +136,15 @@ export default {
 		    
 	    },
 	    submitNewGoods(){
-	    	
+	    	if (this.goodsTypesId) {}
 	    	var _this=this;
 	    	var postData={
 	    		GoodsTypesId:this.goodsTypesId,
-	    		CargoVolume:this.ton,
+	    		CargoVolume:parseInt(this.ton),
 	    		StartPortId:this.startPortId,
 	    		EndPortId:this.endPortId,
 	    		LoadDate:this.loadDate,
-	    		LoadAddDay:this.deviationDays,
+	    		LoadAddDay:parseInt(this.deviationDays),
 	    		OpenId:this.$store.state.openId,
 	    	}
 	  		this.$http.post(this.$store.state.url+ 'Goods/GOO_AddGoods',postData)

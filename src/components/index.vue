@@ -24,10 +24,17 @@ export default {
         'v-nav': nav
     },
     created(){
+        //this.isToAuth();
         //通过code获取到openId，存入store，再通过openId获得是否绑定
-
     },
     methods:{
+        isToAuth:function(){
+            var ua = window.navigator.userAgent.toLowerCase(); 
+            //如果没有code并且是微信浏览器就跳授权页
+            if(window.location.href.indexOf("code")<0&&ua.match(/MicroMessenger/i) == 'micromessenger'){
+                window.location.href="https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx318ae0637e725068&redirect_uri=http%3a%2f%2fweixin.sspp.co%2fpage%2ffindgoods%2findex.html&response_type=code&scope=snsapi_userinfo&state="+this.getUrlParam("shipId")+"#wechat_redirect";
+            }
+        },
         getUrlParam(name) {
             var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
             var r = window.location.search.substr(1).match(reg); //匹配目标参数
