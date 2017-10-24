@@ -4,7 +4,7 @@
 			<span class="formName">物种*</span><!-- 
 		 --><span class="formInput" @click="showGoodsType">
 				<span>{{goodsTypesName}}</span>
-				<span class="fr grey">></span>
+				<span class="fr"><img class="arrowRightIcon" :src="imgPath+'arrowRightIcon.png'"></span>
 			</span>
 		</div>
 		<div class="formItem">
@@ -17,14 +17,14 @@
 			<span class="formName">装货港*</span><!-- 
 		 --><span class="formInput" @click="showStartPort">
 				<span>{{startPortName}}</span>
-				<span class="fr grey">></span>
+				<span class="fr"><img class="arrowRightIcon" :src="imgPath+'arrowRightIcon.png'"></span>
 			</span>
 		</div>
 		<div class="formItem">
 			<span class="formName">卸货港*</span><!-- 
 		 --><span class="formInput" @click="showEndPort">
 				<span>{{endPortName}}</span>
-				<span class="fr grey">></span>
+				<span class="fr"><img class="arrowRightIcon" :src="imgPath+'arrowRightIcon.png'"></span>
 			</span>
 		</div>
 		<div class="formItem">
@@ -55,6 +55,7 @@ export default {
   	name: 'addGoods',
   	data () {
    		return {
+   			imgPath:"../../static/img/",
    			shadeShow:false,
     		startPortShow:false,
     		endPortShow:false,
@@ -235,5 +236,11 @@ export default {
 	color: white;
 	padding: 0.08rem;
 
+}
+.arrowRightIcon{
+    width: 0.2rem;
+    height: 0.2rem;
+    vertical-align: middle;
+    margin-top: -0.04rem;
 }
 </style>

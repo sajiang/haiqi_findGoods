@@ -11,8 +11,8 @@ export default new Router({
     {
     	path: '/',name: 'index',component: index,redirect: '/findGoods',
       children:[
-	      	{path:'/findGoods',component: findGoods},
-	      	{path:'/findGoodsOwner',component: findGoodsOwner},
+      	{path:'/findGoods',component: findGoods},
+      	{path:'/findGoodsOwner',component: findGoodsOwner,},
 	    ]
     },
     {path:'/personalCenter',name:'personalCenter',component: resolve => require(['@/components/personalCenter'], resolve)},

@@ -326,7 +326,7 @@ export default {
 		box-sizing:border-box;
 	}
 	.normalInput{
-		width: 1rem;
+		width: 30%;
 		border: 1px solid @lightGrey;
 		.rounded-corners();
 		padding-left: 0.1rem;
@@ -338,7 +338,7 @@ export default {
 		color: white;
 		background-color: @blue;
 		display: inline-block;
-		width: 0.5rem;
+		width: 15%;
 		margin: 0 0.02rem;
 		height: 0.25rem;
 		line-height: 0.25rem;

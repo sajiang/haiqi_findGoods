@@ -104,7 +104,7 @@
 					<input type="" name="" placeholder="公司名称搜索" v-model="keyword" @input="preKeywordSearch">
 					<img :src="imgPath+'delete.png'" @click="keyword=''">
 				</span>
-				<span class="fr cancel" @click="keywordSearchShow=false">取消</span>
+				<span class="fr cancel" @click="returnMainPage">取消</span>
 			</div>
 			<div class="waitToSelectCompanyListWrap" v-show="waitToSelectCompanyListShow">
 				<div class="waitToSelectCompanyList">
@@ -175,6 +175,19 @@ export default {
       waitToSelectCompanyListShow:false,
       historySearchGoodserKeywordRecord:[],
     }
+  },
+  beforeRouteEnter(to, from, next){
+	next(vm=>{
+		vm.keywordSearchShow=false;
+	});
+  },
+  beforeRouteLeave(to, from, next){
+	if (this.keywordSearchShow) {
+		this.keywordSearchShow=false;
+		next(false)
+	}else{
+		next();
+	}
   },
   components: {
     'v-shade': shade,
@@ -457,6 +470,11 @@ export default {
         });
 		this.keywordSearchShow=false;
 		//清空之前的选项,但是不重新搜索
+    	this.searchOption.goodsType.show=false;
+    	this.searchOption.shippingLine.show=false;
+    	this.searchOption.weightRange.show=false;
+    	this.shadeShow=false;
+
 		this.searchOption.goodsType.showstr="货种";
 		this.searchOption.goodsType.goodsTypeIndexes=[];
 		this.searchOption.shippingLine.startPortName="";
@@ -467,6 +485,13 @@ export default {
 	    this.searchOption.weightRange.showstr="货量";
     	this.searchOption.weightRange.theStartVal="";
     	this.searchOption.weightRange.theEndVal="";
+    },
+    returnMainPage(){
+    	this.keywordSearchShow=false;
+    	this.searchOption.goodsType.show=false;
+    	this.searchOption.shippingLine.show=false;
+    	this.searchOption.weightRange.show=false;
+    	this.shadeShow=false;
     },
     showCustomerServicePhone(){
     	this.customerServicePhoneShow=true;
@@ -559,7 +584,7 @@ export default {
 		box-sizing:border-box;
 	}
 	.normalInput{
-		width: 1rem;
+		width: 30%;
 		border: 1px solid @lightGrey;
 		display: inline-block;
 		.rounded-corners();
@@ -571,7 +596,7 @@ export default {
 		color: white;
 		background-color: @blue;
 		display: inline-block;
-		width: 0.5rem;
+		width: 15%;
 		margin: 0 0.02rem;
 		height: 0.25rem;
 		line-height: 0.25rem;
