@@ -136,7 +136,10 @@ export default {
 		    
 	    },
 	    submitNewGoods(){
-	    	if (this.goodsTypesId) {}
+	    	if (!(this.goodsTypesId&&this.ton&&this.startPortId&&this.endPortId&&this.loadDate)) {
+	    		this.$Message.error("请填完所有必填项");
+	    		return;
+	    	}
 	    	var _this=this;
 	    	var postData={
 	    		GoodsTypesId:this.goodsTypesId,
@@ -146,7 +149,7 @@ export default {
 	    		LoadDate:this.loadDate,
 	    		LoadAddDay:parseInt(this.deviationDays),
 	    		OpenId:this.$store.state.openId,
-	    	}
+	    	};
 	  		this.$http.post(this.$store.state.url+ 'Goods/GOO_AddGoods',postData)
 	  		.then(function (response) {
 	            if (response.data.RetCode == 0) {
