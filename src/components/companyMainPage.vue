@@ -46,19 +46,19 @@ export default {
     data () {
         return {
             imgPath:"../../static/img/",
-            companyId:'',
+            GoodsOwnerId:'',
             companyData:{}
         }
     },
     created(){
-        this.companyId=this.$route.params.companyId;
+        this.GoodsOwnerId=this.$route.params.goodsOwnerId;
         this.getCompanyInfo();
     },
     methods:{
         getCompanyInfo(){
             var _this=this;
             var postData={
-                GoodsOwnerId:this.companyId,
+                GoodsOwnerId:this.GoodsOwnerId,
                 OpenId:'',
             };
             this.$http.post(this.$store.state.url+'Goods/GOO_GoodsListDetails',postData)
@@ -71,7 +71,7 @@ export default {
             });
         },
         toHistoryCompany(){
-            this.$router.push({ name: 'historyCompany', params: { companyId:this.companyId }});
+            this.$router.push({ name: 'historyCompany', params: { companyId:this.companyData.CompanyId }});
         }
     }
 }

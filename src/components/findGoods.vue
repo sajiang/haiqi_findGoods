@@ -25,7 +25,7 @@
 				<input class="normalInput" placeholder="输入吨数" type="number" name="" v-model="searchOption.weightRange.theStartVal">
 				<span class="grey">-</span>
 				<input class="normalInput" placeholder="输入吨数" type="number" name="" v-model="searchOption.weightRange.theEndVal">
-				<span class="blueBtn" @click="clearWeightRange">清空</span>
+				<span class="blueBorderBtn" @click="clearWeightRange">清空</span>
 				<span class="blueBtn" @click="replaceWeightRange">搜索</span>
 			</div>
 			<!-- 日期 -->
@@ -33,7 +33,7 @@
 				<input class="normalInput" placeholder="输入日期" type="date" name="" v-model="searchOption.dateRange.startDate">
 				<span class="grey">-</span>
 				<input class="normalInput" placeholder="输入日期" type="date" name="" v-model="searchOption.dateRange.endDate">
-				<span class="blueBtn" @click="clearDateRange">清空</span>
+				<span class="blueBorderBtn" @click="clearDateRange">清空</span>
 				<span class="blueBtn" @click="replaceDateRange">搜索</span>
 			</div>
 		</div>
@@ -48,16 +48,16 @@
 				</div>
 				<div class="flowDirection">
 					<div class="ports">
-						<div class="inlineBlock startPort">{{item.StartPortName}}</div>
+						<div class="inlineBlock font16 startPort">{{item.StartPortName}}</div>
 						<div class="inlineBlock arrow">
 							<div class="font12 goodsType">{{item.GoodsTypeName}}</div>
 							<div class="imgWrap"><img :src="imgPath+'arrowRight.png'" class="arrowRight"></div>
-							<div class="font12">{{item.GoodsVolume}}±{{item.AddVolume}}</div>
+							<div class="font12">{{item.GoodsVolume}} ± {{item.AddVolume}}</div>
 						</div>
-						<div class="inlineBlock  endPort">{{item.EndPortName}}</div>
+						<div class="inlineBlock font16 endPort">{{item.EndPortName}}</div>
 					</div>
 					
-					<div style="width:20%" class="inlineBlock  blue time">{{item.LoadDate}}±{{item.LoadAddDay}}</div>
+					<div class="inlineBlock font16 blue time">{{item.LoadDate}}±{{item.LoadAddDay}}</div>
 				</div>
 				<div class="font12 grey flex flex-direction-row">
 					<span class="flex-1"><img class="dot" :src="imgPath+'dot.png'"/>已注册{{item.RegNum}}</span>
@@ -273,8 +273,8 @@ export default {
     	this.pageIndex=1;
 	    this.getGoodsList();
     },
-    toCompanyMainPage(companyId){
-    	this.$router.push({ name: 'companyMainPage', params: { companyId }});
+    toCompanyMainPage(goodsOwnerId){
+    	this.$router.push({ name: 'companyMainPage', params: { goodsOwnerId }});
     },
     toAddGoods(){
     	this.$router.push({ name: 'addGoods'});
@@ -337,11 +337,22 @@ export default {
 	.blueBtn{
 		color: white;
 		background-color: @blue;
+		border:1px solid @blue;
 		display: inline-block;
 		width: 15%;
 		margin: 0 0.02rem;
-		height: 0.25rem;
-		line-height: 0.25rem;
+		padding: 0.03rem;
+		.rounded-corners();
+		text-align: center;
+	}
+	.blueBorderBtn{
+		color:  @blue;
+		background-color: white;
+		display: inline-block;
+		border:1px solid @blue;
+		width: 15%;
+		margin: 0 0.02rem;
+		padding: 0.03rem;
 		.rounded-corners();
 		text-align: center;
 	}
@@ -352,20 +363,22 @@ export default {
 	margin-top: 0.85rem;
 	.goodsItem{
 		background-color: white;
-		margin:0 0.15rem 0.12rem 0.15rem ;
+		margin:0 0.1rem 0.1rem 0.1rem ;
 		padding-left: 0.1rem;
+		padding-bottom: 0.1rem;
 		.tel{
-			width: 0.32rem;
-			height: 0.28rem;
+			width: 0.51rem;
+			height: 0.45rem;
 			float: right;
-			img{width: 100%;height: 100%;}
+			img{float: right;width: 0.32rem;
+			height: 0.28rem;}
 		}
 		.flowDirection{
 			position: relative;
 			top: -0.1rem;
 			height: 0.5rem;
 			.ports{
-				width:75%;text-align:center;position:relative;
+				width:70%;text-align:center;position:relative;
 				.startPort{
 					position: absolute;
 					top: 0.2rem;

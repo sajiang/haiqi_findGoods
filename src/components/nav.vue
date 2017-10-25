@@ -2,10 +2,10 @@
   <div class="textCenter nav">
     <div class="routers">
       <router-link to="/findGoods" class="findGoods grey" >
-        <span class="navText  font16">货盘</span>
+        <span class="navText">货盘</span>
       </router-link>
       <router-link to="/findGoodsOwner" class="findGoodsOwner grey">
-        <span class="navText  font16">货主</span>
+        <span class="navText">货主</span>
       </router-link>
     </div>
     

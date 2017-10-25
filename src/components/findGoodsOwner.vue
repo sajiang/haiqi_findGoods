@@ -25,7 +25,7 @@
 				<span class="normalInput" :class="searchOption.shippingLine.startPortName?'':'grey'"  @click="showPortSelect('startPort')">{{searchOption.shippingLine.startPortName?searchOption.shippingLine.startPortName:"请选择港口"}}</span>
 				<span class="grey">-</span>
 				<span class="normalInput" :class="searchOption.shippingLine.endPortName?'':'grey'"   @click="showPortSelect('endPort')">{{searchOption.shippingLine.endPortName?searchOption.shippingLine.endPortName:"请选择港口"}}</span>
-				<span class="blueBtn" @click="clearShippingLine">清空</span>
+				<span class="blueBorderBtn" @click="clearShippingLine">清空</span>
 				<span class="blueBtn" @click="replaceShippingLine">搜索</span>
 			</div>
 			<!-- 货种 -->
@@ -40,7 +40,7 @@
 				<input class="normalInput" placeholder="输入吨数" type="number" name="" v-model="searchOption.weightRange.theStartVal" >
 				<span class="grey">-</span>
 				<input class="normalInput" placeholder="输入吨数" type="number" name="" v-model="searchOption.weightRange.theEndVal">
-				<span class="blueBtn" @click="clearWeightRange">清空</span>
+				<span class="blueBorderBtn" @click="clearWeightRange">清空</span>
 				<span class="blueBtn" @click="replaceWeightRange">搜索</span>
 			</div>
 		</div>
@@ -53,7 +53,7 @@
 					<div class="fl mgr5">
 						<img class="logo" :src="imgPath+'logo.png'">
 					</div>
-					<div class="fl mgl5">
+					<div class="fl">
 						<div class="font16">{{item.Company}}</div>
 						<div class="font12 grey mgt5">
 							<span>已注册{{item.RegNum}}</span>
@@ -82,10 +82,10 @@
 					<span class="grey fr"><img class="arrowRightIcon" :src="imgPath+'arrowRightIcon.png'"></span>
 				</div>
 				<div class="contact">
-					<a :href="'tel:'+contacts.GoodsOwnerPhone" class="telInfo" v-for="contacts in item.GoodsOwnerList">
+					<a :href="'tel:'+contacts.GoodsOwnerPhone" class="telInfo" v-for="(contacts,index) in item.GoodsOwnerList">
 						<span class="verticalMiddle">{{contacts.GoodsOwnerName}}</span>
 						<img class="tel verticalMiddle" :src="imgPath+'tel1.png'">
-						<span class="grey mgl5 mgr5" v-show="index<1">|</span>
+						<span class="border mgl5 mgr5" v-show="index+1<item.GoodsOwnerList.length">|</span>
 					</a>
 				</div>
 			</div>
@@ -565,15 +565,15 @@ export default {
 			color: @drakGrey;
 		}
 		.goodsTypeItemChosen{
-			border-color: @orange;
 			background-color: @transOrange;
 			color: @orange;
+			border: 2px solid red;
 		}
 		.goodsTypeItemChosen:after{
 			content: url(../../static/img/check.svg);
 			position: absolute;
 			right: 0;
-			bottom: -0.1rem;
+			bottom: -0.09rem;
 		}
 	}
 	.weightRange,.shippingLine{
@@ -595,11 +595,22 @@ export default {
 	.blueBtn{
 		color: white;
 		background-color: @blue;
+		border:1px solid @blue;
 		display: inline-block;
 		width: 15%;
 		margin: 0 0.02rem;
-		height: 0.25rem;
-		line-height: 0.25rem;
+		padding: 0.03rem;
+		.rounded-corners();
+		text-align: center;
+	}
+	.blueBorderBtn{
+		color:  @blue;
+		background-color: white;
+		display: inline-block;
+		border:1px solid @blue;
+		width: 15%;
+		margin: 0 0.02rem;
+		padding: 0.03rem;
 		.rounded-corners();
 		text-align: center;
 	}
@@ -623,6 +634,7 @@ export default {
 			.logo{
 				width: 0.45rem;
 				height: 0.45rem;
+				margin-right: 0.2rem;
 			}
 		}
 		.businessIntroduction{
@@ -654,6 +666,11 @@ export default {
 				width: 0.15rem;
 				height: 0.15rem;
 			}
+			.border{
+				color: #CCC;
+				margin-top: 0.1rem;
+				vertical-align: middle;
+			}
 		}
 	}
 }
@@ -665,9 +682,9 @@ export default {
 	bottom: 0;
 	padding: 0.2rem 0.1rem;
 	z-index: 7;
-	background: white;
+	background: #f2f2f2;
 	.searchBox{
-		background: @backGrey;
+		background: #E2E2E2;
 		display: inline-block;
 		line-height: 0.3rem;
 		height: 0.3rem;
@@ -680,7 +697,7 @@ export default {
 			vertical-align: middle;
 		}
 		input{
-			background: @backGrey;
+			background: #E2E2E2;;
 			border:none;
 			outline: none;
 			line-height: 0.25rem;
@@ -697,7 +714,7 @@ export default {
 		margin-top: 0.1rem;
 		.historySpan{
 			display: inline-block;
-			background: @backGrey;
+			background: #E2E2E2;
 			color: @grey;
 			padding: 0.05rem 0.1rem;
 			.rounded-corners();

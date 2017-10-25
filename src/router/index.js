@@ -18,7 +18,7 @@ export default new Router({
     {path:'/personalCenter',name:'personalCenter',component: resolve => require(['@/components/personalCenter'], resolve)},
     {path:'/completePersonalInfo',name:'completePersonalInfo',component: resolve => require(['@/components/completePersonalInfo'], resolve)},
     {path:'/addGoods',name:'addGoods',component: resolve => require(['@/components/addGoods'], resolve)},
-    {path:'/companyMainPage/:companyId',name:'companyMainPage',component: resolve => require(['@/components/companyMainPage'], resolve)},
+    {path:'/companyMainPage/:goodsOwnerId',name:'companyMainPage',component: resolve => require(['@/components/companyMainPage'], resolve)},
     {path:'/historyCompany/:companyId',name:'historyCompany',component: resolve => require(['@/components/historyCompany'], resolve)},
     {path:'/historyPersonal/:goodsOwnerId',name:'historyPersonal',component: resolve => require(['@/components/historyPersonal'], resolve)},
   ]

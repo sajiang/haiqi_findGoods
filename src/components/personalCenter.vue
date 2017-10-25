@@ -100,16 +100,15 @@ export default {
     	display: inline-block;
     	padding: 0.05rem 0.08rem;
     	.rounded-corners(0.5rem);
-    	margin-right: 0.05rem;
     }
 }
 .basicInfo{
-	padding: 0.2rem 0.2rem 0.1rem 0.1rem;
+	padding: 0.2rem 0.1rem 0.1rem 0.1rem;
     .logo{
         width: 0.5rem;
         height: 0.5rem;
 
-        margin: 0rem 0.1rem;
+        margin: 0rem 0.2rem 0 0.1rem;
     }
 }
 .businessIntroduction{
@@ -128,7 +127,7 @@ export default {
 }
 .historyGoods{
     padding: 0.1rem 0;
-    margin:0 0.2rem;
+    margin:0 0.1rem 0 0.2rem;
     line-height: 1.5;
     border-top: 1px solid @lightGrey;
 

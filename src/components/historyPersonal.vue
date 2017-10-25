@@ -10,14 +10,16 @@
                     <span class="fr publishedTime">{{item.EditDate}}</span>
                 </div>
                 <div class="flowDirection">
-                    <div class="inlineBlock middle startPort" :class="item.IsExpire?'grey':''">{{item.StartPortName}}</div>
-                    <div class="inlineBlock arrow">
-                        <div class="font12 goodsType" :class="item.IsExpire?'grey':''">{{item.GoodsTypeName}}</div>
-                        <div class="imgWrap"><img :src="imgPath+'arrowRight.png'" class="arrowRight"></div>
-                        <div class="font12" :class="item.IsExpire?'grey':''">{{item.GoodsVolume}}±{{item.AddVolume}}</div>
+                    <div class="ports">
+                        <div class="inlineBlock middle font16 startPort" :class="item.IsExpire?'grey':''">{{item.StartPortName}}</div>
+                        <div class="inlineBlock arrow">
+                            <div class="font12 goodsType" :class="item.IsExpire?'grey':''">{{item.GoodsTypeName}}</div>
+                            <div class="imgWrap"><img :src="imgPath+'arrowRight.png'" class="arrowRight"></div>
+                            <div class="font12" :class="item.IsExpire?'grey':''">{{item.GoodsVolume}}±{{item.AddVolume}}</div>
+                        </div>
+                        <div class="inlineBlock middle font16 endPort" :class="item.IsExpire?'grey':''">{{item.EndPortName}}</div>
                     </div>
-                    <div class="inlineBlock middle endPort" :class="item.IsExpire?'grey':''">{{item.EndPortName}}</div>
-                    <div class="inlineBlock middle time" :class="item.IsExpire?'grey':'blue'" >{{item.LoadDate}}±{{item.LoadAddDay}}</div>
+                    <div class="inlineBlock middle time font16" :class="item.IsExpire?'grey':'blue'" >{{item.LoadDate}}±{{item.LoadAddDay}}</div>
                 </div>
                 <div class="font12 grey flex flex-direction-row">
                     <span><img class="dot" :src="imgPath+'dot.png'"/>已注册{{item.RegNum}}</span>
@@ -58,6 +60,7 @@ export default {
                 "GoodsListId":goodsListId,
             }).then(function (response) {
                 if (response.data.RetCode == 0) {
+
                     _this.$Message.success(response.data.RetMsg);
                     _this.pageIndex=1;
                     _this.getPersonalGoodsList()
@@ -84,6 +87,7 @@ export default {
                 "PageSize":10,
             }).then(function (response) {
                 if (response.data.RetCode == 0) {
+                    _this.totalPage=response.data.RetData.TotalPage;
                     if (_this.totalPage==_this.pageIndex) {
                         _this.notLoading=true;
                     }
@@ -110,39 +114,42 @@ export default {
     .goodsItem{
     	position: relative;
         background-color: white;
-        margin:0 0.15rem 0.12rem 0.15rem ;
+        margin:0 0.1rem 0.1rem 0.1rem ;
         padding-left: 0.1rem;
+        padding-bottom: 0.1rem;
         .flowDirection{
             position: relative;
             top: -0.1rem;
             height: 0.5rem;
-            .startPort{
-                width: 0.74rem;
-            }
-            .endPort{
-                width: 0.74rem;
-                text-align: right;
-            }
-            
-            .middle{
-                position: relative;
-                top: -0.1rem;
+            .ports{
+                width:70%;text-align:center;position:relative;
+                .startPort{
+                    position: absolute;
+                    top: 0.2rem;
+                    left: 0rem;
+                }
+                .endPort{
+                    position: absolute;
+                    top: 0.2rem;
+                    right: 0rem;
+                }
+                .arrow{
+                    text-align: center;
+                    .goodsType{
+                        position: relative;
+                        top: 0.1rem;
+                    }
+                    .arrowRight{
+                        width: 0.82rem;
+                    }
+                }
             }
             .time{
                 position: absolute;
                 right: 0.05rem;
                 top: 0.2rem;
             }
-            .arrow{
-                text-align: center;
-                .goodsType{
-                    position: relative;
-                    top: 0.1rem;
-                }
-                .arrowRight{
-                    width: 0.82rem;
-                }
-            }
+            
         }
         .dot{
             width: 0.04rem;
@@ -153,7 +160,7 @@ export default {
         .publishedTime{
             font-size: 12px;
             color: @grey;
-            margin: 0.1rem;
+            margin:0.1rem 0.05rem;
             display: inline-block;
         }
         .contactFrequency{
@@ -163,9 +170,11 @@ export default {
         	position: absolute;
         	right: 0;
         	bottom: 0;
+            width: 0.32rem;
+                height: 0.28rem;
         	img{
-        		width: 0.32rem;
-        		height: 0.28rem;
+        		width: 100%;
+                height: 100%;
         	}
         }
     }

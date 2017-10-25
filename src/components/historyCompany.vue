@@ -10,14 +10,16 @@
                     <span class="fr publishedTime">{{item.EditDate}}</span>
                 </div>
                 <div class="flowDirection">
-                    <div class="inlineBlock middle startPort">{{item.StartPortName}}</div>
-                    <div class="inlineBlock arrow">
-                        <div class="font12 goodsType">{{item.GoodsTypeName}}</div>
-                        <div class="imgWrap"><img :src="imgPath+'arrowRight.png'" class="arrowRight"></div>
-                        <div class="font12">{{item.GoodsVolume}}±{{item.AddVolume}}</div>
+                    <div class="ports">
+                        <div class="inlineBlock middle font16 startPort">{{item.StartPortName}}</div>
+                        <div class="inlineBlock arrow">
+                            <div class="font12 goodsType">{{item.GoodsTypeName}}</div>
+                            <div class="imgWrap"><img :src="imgPath+'arrowRight.png'" class="arrowRight"></div>
+                            <div class="font12">{{item.GoodsVolume}}±{{item.AddVolume}}</div>
+                        </div>
+                        <div class="inlineBlock font16 middle endPort">{{item.EndPortName}}</div>
                     </div>
-                    <div class="inlineBlock middle endPort">{{item.EndPortName}}</div>
-                    <div class="inlineBlock middle blue time">{{item.LoadDate}}±{{item.LoadAddDay}}</div>
+                    <div class="inlineBlock font16 middle blue time">{{item.LoadDate}}±{{item.LoadAddDay}}</div>
                 </div>
                 <div class="font12 grey flex flex-direction-row">
                     <span><img class="dot" :src="imgPath+'dot.png'"/>已注册{{item.RegNum}}</span>
@@ -86,24 +88,36 @@ export default {
     background-color: #eee;
     padding:0.12rem 0;
     .goodsItem{
-        background-color: white;
-        margin:0 0.15rem 0.12rem 0.15rem ;
+         background-color: white;
+        margin:0 0.1rem 0.1rem 0.1rem ;
         padding-left: 0.1rem;
+        padding-bottom: 0.1rem;
         .flowDirection{
             position: relative;
             top: -0.1rem;
             height: 0.5rem;
-            .startPort{
-                width: 0.74rem;
-            }
-            .endPort{
-                width: 0.74rem;
-                text-align: right;
-            }
-            
-            .middle{
-                position: relative;
-                top: -0.1rem;
+            .ports{
+                width:70%;text-align:center;position:relative;
+                .startPort{
+                    position: absolute;
+                    top: 0.2rem;
+                    left: 0rem;
+                }
+                .endPort{
+                    position: absolute;
+                    top: 0.2rem;
+                    right: 0rem;
+                }
+                .arrow{
+                    text-align: center;
+                    .goodsType{
+                        position: relative;
+                        top: 0.1rem;
+                    }
+                    .arrowRight{
+                        width: 0.82rem;
+                    }
+                }
             }
             .time{
                 position: absolute;
@@ -130,7 +144,7 @@ export default {
         .publishedTime{
             font-size: 12px;
             color: @grey;
-            margin: 0.1rem;
+            margin:0.1rem 0.05rem;
             display: inline-block;
         }
         .contactFrequency{
