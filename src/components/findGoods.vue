@@ -215,17 +215,17 @@ export default {
     	//市有值
     	if(portInfo.length>1){
 	        this.searchOption.endPort.showstr=portInfo[1].cityName;
-        	this.searchOption.endPort.EndCId=portInfo[1].cityId;
+        	this.searchOption.endPort.EndCID=portInfo[1].cityId;
         	this.searchOption.endPort.EndPID=portInfo[0].proviceId;
 	    }
 	    //只有省份有值
 	    else if (portInfo.length>0) {
 	        this.searchOption.endPort.showstr=portInfo[0].proviceName;
-	        this.searchOption.endPort.EndCId=0;
+	        this.searchOption.endPort.EndCID=0;
         	this.searchOption.endPort.EndPID=portInfo[0].proviceId;
 	    }else{
 	    	this.searchOption.endPort.showstr="卸货港";
-	        this.searchOption.endPort.EndCId=0;
+	        this.searchOption.endPort.EndCID=0;
         	this.searchOption.endPort.EndPID=0;
 	    }
 	    this.pageIndex=1;
