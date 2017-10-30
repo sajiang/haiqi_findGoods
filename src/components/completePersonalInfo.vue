@@ -28,7 +28,7 @@ export default {
    		return {
    			companyName:"",
    			name:"",
-   			phoneNumber:"18355648235",
+   			phoneNumber:this.$store.state.phoneNumber,
     	}
     },
     methods:{

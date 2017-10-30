@@ -26,7 +26,7 @@ export default {
   name: 'nav',
   data () {
     return {
-      imgPath:"../../static/img/",
+      imgPath:"static/img/",
       shadeShow:false,
       registerShow:false,
     }

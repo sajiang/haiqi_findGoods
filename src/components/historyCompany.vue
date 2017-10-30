@@ -3,7 +3,7 @@
         <div class="goodsList"  v-infinite-scroll="loadMore"
              infinite-scroll-disabled="notLoading"
              infinite-scroll-distance="10"
-             infinite-scroll-immediate-check="false">
+             infinite-scroll-immediate-check="true">
             <div class="goodsItem" v-for="(item,index) in goodsList" >
                 <div>
                     <span class="blue inlineBlock mgt10">{{item.GoodsOwnerName}}</span>
@@ -37,17 +37,17 @@ export default {
     name: 'historyCompany',
     data () {
         return {
-            imgPath:"../../static/img/",
+            imgPath:"static/img/",
             companyId:'',
             goodsList:[],
-            pageIndex:1,
+            pageIndex:0,
             totalPage:0,
             notLoading:false,
         }
     },
     created(){
         this.companyId=this.$route.params.companyId;
-        this.getCompanyGoodsList();
+        //this.getCompanyGoodsList();
     },
     methods:{
         loadMore(){
@@ -64,7 +64,7 @@ export default {
             }).then(function (response) {
                 if (response.data.RetCode == 0) {
                     _this.totalPage=response.data.RetData.TotalPage;
-                    if (_this.totalPage==_this.pageIndex) {
+                    if (_this.totalPage<=_this.pageIndex) {
                         _this.notLoading=true;
                     }
                     if (_this.pageIndex>1) {

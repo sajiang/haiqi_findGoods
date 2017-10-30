@@ -87,7 +87,7 @@ export default {
   name: 'findGoods',
   data () {
     return {
-      imgPath:"../../static/img/",
+      imgPath:"static/img/",
       shadeShow:false,
       headerZIndex:4,
       isHighShadowIndex:false,
@@ -150,7 +150,7 @@ export default {
   			MaxVolume:this.searchOption.weightRange.theEndVal,
   			StartTime: this.searchOption.dateRange.startDate,
   			EndTime:this.searchOption.dateRange.endDate,
-  			OpenId:''
+  			OpenId:this.$store.state.openId
   		};
   		this.$http.post(this.$store.state.url+'Goods/GOO_GoodsList',postData)
   		.then(function(response){
@@ -333,6 +333,8 @@ export default {
 		height: 0.3rem;
 		line-height: 0.3rem;
 		box-shadow: none;
+	}
+	.normalInput[type='date']{
 	}
 	.blueBtn{
 		color: white;

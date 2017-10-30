@@ -45,7 +45,7 @@ export default {
     name: 'companyMainPage',
     data () {
         return {
-            imgPath:"../../static/img/",
+            imgPath:"static/img/",
             GoodsOwnerId:'',
             companyData:{}
         }
@@ -59,7 +59,7 @@ export default {
             var _this=this;
             var postData={
                 GoodsOwnerId:this.GoodsOwnerId,
-                OpenId:'',
+                OpenId:this.$store.state.openId,
             };
             this.$http.post(this.$store.state.url+'Goods/GOO_GoodsListDetails',postData)
             .then(function(response){

@@ -29,7 +29,7 @@ export default {
 	name: 'nav',
 	data () {
 		return {
-			imgPath:"../../static/img/",
+			imgPath:"../static/img/",
 			phoneNumber:"",
 			numberCode:"",
 			code:"",

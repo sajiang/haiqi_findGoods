@@ -24,15 +24,16 @@ export default {
         'v-nav': nav
     },
     created(){
-        //this.isToAuth();
+        this.isToAuth();
         //通过code获取到openId，存入store，再通过openId获得是否绑定
+        this.getOpenId();
     },
     methods:{
         isToAuth:function(){
             var ua = window.navigator.userAgent.toLowerCase(); 
             //如果没有code并且是微信浏览器就跳授权页
             if(window.location.href.indexOf("code")<0&&ua.match(/MicroMessenger/i) == 'micromessenger'){
-                window.location.href="https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx318ae0637e725068&redirect_uri=http%3a%2f%2fweixin.sspp.co%2fpage%2ffindgoods%2findex.html&response_type=code&scope=snsapi_userinfo&state="+this.getUrlParam("shipId")+"#wechat_redirect";
+                window.location.href="https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx318ae0637e725068&redirect_uri=http%3a%2f%2fweixin.sspp.co%2fpage%2ffindgoods%2findex.html&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect";
             }
         },
         getUrlParam(name) {
@@ -60,14 +61,13 @@ export default {
                 _this.$store.state.openId = _this.getCookie("openId");
                 _this.$store.state.isBind = _this.getCookie("isBind");
                 
-            } else {
-                axios.get(this.$store.state.url + 'Common/COM_QueryOpenId?Code=' + this.getUrlParam("code")).then(function (response) {
+            } else if(window.location.href.indexOf("code")>0) {
+                this.$http.get('http://weixin.sspp.co/api/Common/COM_QueryOpenId?Code=' + this.getUrlParam("code")).then(function (response) {
                     if (response.data.RetCode == 0) {
                         _this.$store.state.openId = response.data.RetData.OpenId;
-                        _this.$store.state.isBind = response.data.RetData.isBind;
-                        _this.setCookie("openId", _this.openId);
-                        _this.setCookie("isBind", _this.isBind); //0 未绑定   1绑定
-                        
+                        _this.$store.state.isBind = response.data.RetData.isBindMobileNum;
+                        _this.setCookie("openId", _this.$store.state.openId);
+                        _this.setCookie("isBind", _this.$store.state.isBind); //0 未绑定   1绑定
                     } else {
                         _this.$Message.error(response.data.RetMsg);
                     }

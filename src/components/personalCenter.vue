@@ -51,7 +51,7 @@ export default {
     name: 'personalCenter',
     data () {
         return {
-            imgPath:"../../static/img/",
+            imgPath:"static/img/",
             personalInfo:{},
            
         }
@@ -66,6 +66,7 @@ export default {
             .then(function (response) {
                 if (response.data.RetCode == 0) {
                     _this.personalInfo=response.data.RetData;
+                    _this.$store.state.phoneNumber=_this.personalInfo.MobilePhone;
                 }else{
                     _this.$Message.error(response.data.RetMsg);
                 }

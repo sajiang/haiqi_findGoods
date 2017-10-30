@@ -55,7 +55,7 @@ export default {
   	name: 'addGoods',
   	data () {
    		return {
-   			imgPath:"../../static/img/",
+   			imgPath:"static/img/",
    			shadeShow:false,
     		startPortShow:false,
     		endPortShow:false,

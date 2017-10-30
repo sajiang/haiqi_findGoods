@@ -134,7 +134,7 @@ export default {
   name: 'findGoods',
   data () {
     return {
-      imgPath:"../../static/img/",
+      imgPath:"static/img/",
       shadeShow:false,
       customerServicePhoneShow:false,
       keywordSearchShow:false,
